@@ -16,6 +16,17 @@ def make_plot_demo_lin_reg(data, ax, xlim=(-10, 10), ylim=(-10, 10)):
     # ax.axis('off')
 
 
+def make_plot_demo_lin_reg_with_resample(data, ax, xlim=(-10, 10), ylim=(-10, 10)):
+    lr = LinearRegression()
+    resample_mask = np.random.randint(0, len(data), size=len(data))
+    lr.fit(data[resample_mask, 0].reshape(-1, 1), data[resample_mask, 1])
+    xs = np.linspace(xlim[0], xlim[1], 10)
+    ax.plot(xs, lr.predict(xs.reshape(-1, 1)), c='r')
+    ax.scatter(data[:, 0], data[:, 1])
+    ax.set_xlim(*xlim)
+    ax.set_ylim(*ylim)
+
+
 if __name__ == '__main__':
     np.random.seed(0)
 
@@ -32,3 +43,16 @@ if __name__ == '__main__':
     plt.show()
 
     bootstrapped_animation(make_plot_demo_lin_reg, dataset, m=100, out_file='bootstrapped_lin_reg.gif')
+
+    # Same thing, but plotting all points
+    mat = bootstrapped_plot(make_plot_demo_lin_reg_with_resample, dataset, m=100,
+                            out_file='bootstrapped_lin_reg_v2.png',
+                            resample_in_advance=False)
+
+    plt.figure()
+    plt.matshow(mat)
+    plt.axis('off')
+    plt.show()
+
+    bootstrapped_animation(make_plot_demo_lin_reg_with_resample, dataset, m=100, out_file='bootstrapped_lin_reg_v2.gif',
+                           resample_in_advance=False)

@@ -15,7 +15,6 @@ def fig_to_array(fig, ax):
         data = np.frombuffer(buff.getvalue(), dtype=np.uint8)
     w, h = fig.canvas.get_width_height()
     im = data.reshape((int(h), int(w), -1))
-    # fig.clf()  # Clear figure (does not work)
     ax.cla()  # Clear axis
     return im
 
@@ -25,7 +24,6 @@ def merge_matrices_(matrices) -> np.ndarray:
     # Overwrites source images
     matrices = matrices.astype(np.float32) / 255  # Cast to float
     merged = np.mean(matrices, axis=0)
-    merged = (merged - np.min(merged)) / (np.max(merged) - np.min(merged))
     merged = (merged * 255).astype(np.uint8)
     return merged
 
@@ -37,13 +35,18 @@ def plot_to_array(plot_function, data, fig, ax, **kwargs):
     return data
 
 
-def bootstrapped_plot(plot_function, data, m=100, out_file: str = None):
+def bootstrapped_plot(plot_function, data, m=100, out_file: str = None, resample_in_advance=True):
     # plot function receives data as the first argument and ax as the second one
     fig, ax = plt.subplots()
-    bootstrapped_matrices = np.stack([
-        plot_to_array(plot_function, data[np.random.randint(low=0, high=len(data), size=len(data))], fig, ax)
-        for _ in tqdm(range(m), desc='Generating bootstrapped plots')
-    ])
+    if resample_in_advance:
+        bootstrapped_matrices = np.stack([
+            plot_to_array(plot_function, data[np.random.randint(low=0, high=len(data), size=len(data))], fig, ax)
+            for _ in tqdm(range(m), desc='Generating bootstrapped plots')
+        ])
+    else:
+        bootstrapped_matrices = np.stack([
+            plot_to_array(plot_function, data, fig, ax) for _ in tqdm(range(m), desc='Generating bootstrapped plots')
+        ])
     merged_matrices = merge_matrices_(bootstrapped_matrices)
     plt.close(fig)
 
@@ -55,12 +58,17 @@ def bootstrapped_plot(plot_function, data, m=100, out_file: str = None):
 
 
 def bootstrapped_animation(plot_function, data, m=100, out_file: str = None, fps=60, resize=True, sort=True,
-                           decay=True, decay_length=30):
+                           decay=True, decay_length=15, resample_in_advance=True):
     fig, ax = plt.subplots()
-    bootstrapped_matrices = np.stack([
-        plot_to_array(plot_function, data[np.random.randint(low=0, high=len(data), size=len(data))], fig, ax)
-        for _ in tqdm(range(m), desc='Generating bootstrapped plots')
-    ])
+    if resample_in_advance:
+        bootstrapped_matrices = np.stack([
+            plot_to_array(plot_function, data[np.random.randint(low=0, high=len(data), size=len(data))], fig, ax)
+            for _ in tqdm(range(m), desc='Generating bootstrapped plots')
+        ])
+    else:
+        bootstrapped_matrices = np.stack([
+            plot_to_array(plot_function, data, fig, ax) for _ in tqdm(range(m), desc='Generating bootstrapped plots')
+        ])
     plt.close(fig)
 
     if sort:
