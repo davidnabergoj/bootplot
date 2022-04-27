@@ -49,8 +49,10 @@ if __name__ == '__main__':
     plt.axis('off')
     plt.show()
 
-    bootstrapped_animation(make_plot_demo_poly_reg, dataset, m=100, out_file='bootstrapped_poly_reg_deg2.gif')
+    bootstrapped_animation(make_plot_demo_poly_reg, dataset, m=100, out_file='bootstrapped_poly_reg_deg2.gif',
+                           resize=True)
     bootstrapped_animation(
         lambda *args, **kwargs: make_plot_demo_poly_reg(*args, **kwargs, degree=3),
-        dataset, m=100, out_file='bootstrapped_poly_reg_deg3.gif'
+        dataset, m=100, out_file='bootstrapped_poly_reg_deg3.gif',
+        resize=True
     )

@@ -3,6 +3,7 @@ import numpy as np
 import io
 from tqdm import tqdm
 import scipy.spatial.distance
+import scipy.misc
 import networkx as nx
 from PIL import Image
 
@@ -53,7 +54,7 @@ def bootstrapped_plot(plot_function, data, m=100, out_file: str = None):
     return merged_matrices
 
 
-def bootstrapped_animation(plot_function, data, m=100, out_file: str = None, fps=60):
+def bootstrapped_animation(plot_function, data, m=100, out_file: str = None, fps=60, resize=False):
     fig, ax = plt.subplots()
     bootstrapped_matrices = np.stack([
         plot_to_array(plot_function, data[np.random.randint(low=0, high=len(data), size=len(data))], fig, ax)
@@ -63,7 +64,12 @@ def bootstrapped_animation(plot_function, data, m=100, out_file: str = None, fps
 
     # Compute similarity between matrices
     print('Computing image similarity')
-    bootstrapped_vectors = bootstrapped_matrices.astype(np.float32).reshape(len(bootstrapped_matrices), -1) / 255
+    if resize:
+        bootstrapped_vectors = np.array([
+            np.array(Image.fromarray(bm).resize((50, 50))) for bm in bootstrapped_matrices
+        ]).reshape(len(bootstrapped_matrices), -1)
+    else:
+        bootstrapped_vectors = (bootstrapped_matrices.astype(np.float32) / 255).reshape(len(bootstrapped_matrices), -1)
     distance_matrix = scipy.spatial.distance.cdist(bootstrapped_vectors, bootstrapped_vectors)
 
     print('Solving TSP')

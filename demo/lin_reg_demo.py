@@ -31,4 +31,4 @@ if __name__ == '__main__':
     plt.axis('off')
     plt.show()
 
-    bootstrapped_animation(make_plot_demo_lin_reg, dataset, m=100, out_file='bootstrapped_lin_reg.gif')
+    bootstrapped_animation(make_plot_demo_lin_reg, dataset, m=100, out_file='bootstrapped_lin_reg.gif', resize=True)
