@@ -27,4 +27,4 @@ if __name__ == '__main__':
     plt.axis('off')
     plt.show()
 
-    bootstrapped_animation(make_plot_demo_bar, dataset, m=100, out_file='bootstrapped_bar_chart.gif', resize=True)
+    bootstrapped_animation(make_plot_demo_bar, dataset, m=100, out_file='bootstrapped_bar_chart.gif')

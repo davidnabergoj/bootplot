@@ -29,4 +29,4 @@ if __name__ == '__main__':
     plt.axis('off')
     plt.show()
 
-    bootstrapped_animation(make_plot_demo_point_plot, dataset, m=100, out_file='bootstrapped_point_plot.gif', resize=True)
+    bootstrapped_animation(make_plot_demo_point_plot, dataset, m=100, out_file='bootstrapped_point_plot.gif')

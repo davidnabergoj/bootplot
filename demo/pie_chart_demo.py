@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from src import bootstrapped_plot, bootstrapped_animation
 
 
-def make_plot_demo_pie(data, ax, n_classes=6, explode=False):
+def make_plot_demo_pie(data, ax, n_classes=6, explode=True):
     bar_ticks, bar_counts = np.unique(data, return_counts=True)
     bar_ticks_adjusted = np.zeros(n_classes)
     for bt, bc in zip(bar_ticks, bar_counts):
@@ -30,4 +30,4 @@ if __name__ == '__main__':
     plt.axis('off')
     plt.show()
 
-    bootstrapped_animation(make_plot_demo_pie, dataset, m=100, out_file='bootstrapped_pie_chart.gif', resize=True)
+    bootstrapped_animation(make_plot_demo_pie, dataset, m=100, out_file='bootstrapped_pie_chart.gif')
