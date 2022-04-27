@@ -2,7 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import io
 from tqdm import tqdm
-from sklearn.linear_model import LinearRegression
+import scipy.spatial.distance
+import networkx as nx
 from PIL import Image
 
 
@@ -50,3 +51,35 @@ def bootstrapped_plot(plot_function, data, m=100, out_file: str = None):
         out_im.save(out_file)
 
     return merged_matrices
+
+
+def bootstrapped_animation(plot_function, data, m=100, out_file: str = None, fps=60):
+    fig, ax = plt.subplots()
+    bootstrapped_matrices = np.stack([
+        plot_to_array(plot_function, data[np.random.randint(low=0, high=len(data), size=len(data))], fig, ax)
+        for _ in tqdm(range(m), desc='Generating bootstrapped plots')
+    ])
+    plt.close(fig)
+
+    # Compute similarity between matrices
+    print('Computing image similarity')
+    bootstrapped_vectors = bootstrapped_matrices.astype(np.float32).reshape(len(bootstrapped_matrices), -1) / 255
+    distance_matrix = scipy.spatial.distance.cdist(bootstrapped_vectors, bootstrapped_vectors)
+
+    print('Solving TSP')
+    image_graph = nx.from_numpy_array(distance_matrix)
+    order = np.array(nx.algorithms.approximation.traveling_salesman_problem(image_graph))
+    bootstrapped_matrices = bootstrapped_matrices[order]
+
+    if out_file is not None:
+        print('Saving animation')
+        bootstrapped_images = [Image.fromarray(bm) for bm in bootstrapped_matrices]
+        bootstrapped_images[0].save(
+            out_file,
+            save_all=True,
+            append_images=bootstrapped_images[1:],
+            duration=1000 / fps,
+            loop=0
+        )
+
+    return bootstrapped_matrices

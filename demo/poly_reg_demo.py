@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
 
-from src import bootstrapped_plot
+from src import bootstrapped_plot, bootstrapped_animation
 
 
 def make_plot_demo_poly_reg(data, ax, xlim=(-10, 10), ylim=(-10, 10), degree=2):
@@ -48,3 +48,9 @@ if __name__ == '__main__':
     plt.matshow(mat)
     plt.axis('off')
     plt.show()
+
+    bootstrapped_animation(make_plot_demo_poly_reg, dataset, m=100, out_file='bootstrapped_poly_reg_deg2.gif')
+    bootstrapped_animation(
+        lambda *args, **kwargs: make_plot_demo_poly_reg(*args, **kwargs, degree=3),
+        dataset, m=100, out_file='bootstrapped_poly_reg_deg3.gif'
+    )

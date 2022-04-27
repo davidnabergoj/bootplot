@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 
-from src import bootstrapped_plot
+from src import bootstrapped_plot, bootstrapped_animation
 
 
 def make_plot_demo_lin_reg(data, ax, xlim=(-10, 10), ylim=(-10, 10)):
@@ -18,7 +18,7 @@ def make_plot_demo_lin_reg(data, ax, xlim=(-10, 10), ylim=(-10, 10)):
 
 if __name__ == '__main__':
     np.random.seed(0)
-    
+
     plt.rcParams["figure.figsize"] = (5, 5)
 
     dataset = np.random.randn(100, 2)
@@ -30,3 +30,5 @@ if __name__ == '__main__':
     plt.matshow(mat)
     plt.axis('off')
     plt.show()
+
+    bootstrapped_animation(make_plot_demo_lin_reg, dataset, m=100, out_file='bootstrapped_lin_reg.gif')

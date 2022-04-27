@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from src import bootstrapped_plot
+from src import bootstrapped_plot, bootstrapped_animation
 
 
 def make_plot_demo_point_plot(data, ax, xlim=(-1.25, 1.25)):
@@ -28,3 +28,5 @@ if __name__ == '__main__':
     plt.matshow(mat)
     plt.axis('off')
     plt.show()
+
+    bootstrapped_animation(make_plot_demo_point_plot, dataset, m=100, out_file='bootstrapped_point_plot.gif')
