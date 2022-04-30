@@ -32,6 +32,15 @@ if __name__ == '__main__':
     dataset = np.random.randn(100, 2)
     noise = np.random.randn(len(dataset)) * 2.5
     dataset[:, 1] = dataset[:, 0] * 1.5 + 2 + noise
+
+    bootstrapped_animation(make_plot_demo_poly_reg, dataset, m=100, out_file='bootstrapped_poly_reg_deg2.gif')
+    bootstrapped_animation(
+        lambda *args, **kwargs: make_plot_demo_poly_reg(*args, **kwargs, degree=3),
+        dataset,
+        m=100,
+        out_file='bootstrapped_poly_reg_deg3.gif'
+    )
+
     mat = bootstrapped_plot(make_plot_demo_poly_reg, dataset, m=100, out_file='bootstrapped_poly_reg_deg2.png')
 
     plt.figure()
@@ -48,11 +57,3 @@ if __name__ == '__main__':
     plt.matshow(mat)
     plt.axis('off')
     plt.show()
-
-    bootstrapped_animation(make_plot_demo_poly_reg, dataset, m=100, out_file='bootstrapped_poly_reg_deg2.gif')
-    bootstrapped_animation(
-        lambda *args, **kwargs: make_plot_demo_poly_reg(*args, **kwargs, degree=3),
-        dataset,
-        m=100,
-        out_file='bootstrapped_poly_reg_deg3.gif'
-    )

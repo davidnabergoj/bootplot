@@ -10,7 +10,7 @@ def make_plot_demo_lin_reg(data, ax, xlim=(-10, 10), ylim=(-10, 10)):
     lr.fit(data[:, 0].reshape(-1, 1), data[:, 1])
     xs = np.linspace(xlim[0], xlim[1], 10)
     ax.plot(xs, lr.predict(xs.reshape(-1, 1)), c='r')
-    ax.scatter(data[:, 0], data[:, 1])
+    # ax.scatter(data[:, 0], data[:, 1])
     ax.set_xlim(*xlim)
     ax.set_ylim(*ylim)
     # ax.axis('off')
@@ -35,6 +35,8 @@ if __name__ == '__main__':
     dataset = np.random.randn(100, 2)
     noise = np.random.randn(len(dataset)) * 2.5
     dataset[:, 1] = dataset[:, 0] * 1.5 + 2 + noise
+
+    bootstrapped_animation(make_plot_demo_lin_reg, dataset, m=500, out_file='bootstrapped_lin_reg.gif')
     mat = bootstrapped_plot(make_plot_demo_lin_reg, dataset, m=100, out_file='bootstrapped_lin_reg.png')
 
     plt.figure()
@@ -42,9 +44,9 @@ if __name__ == '__main__':
     plt.axis('off')
     plt.show()
 
-    bootstrapped_animation(make_plot_demo_lin_reg, dataset, m=100, out_file='bootstrapped_lin_reg.gif')
-
     # Same thing, but plotting all points
+    bootstrapped_animation(make_plot_demo_lin_reg_with_resample, dataset, m=500, out_file='bootstrapped_lin_reg_v2.gif',
+                           resample_in_advance=False)
     mat = bootstrapped_plot(make_plot_demo_lin_reg_with_resample, dataset, m=100,
                             out_file='bootstrapped_lin_reg_v2.png',
                             resample_in_advance=False)
@@ -53,6 +55,3 @@ if __name__ == '__main__':
     plt.matshow(mat)
     plt.axis('off')
     plt.show()
-
-    bootstrapped_animation(make_plot_demo_lin_reg_with_resample, dataset, m=100, out_file='bootstrapped_lin_reg_v2.gif',
-                           resample_in_advance=False)

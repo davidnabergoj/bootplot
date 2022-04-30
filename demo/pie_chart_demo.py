@@ -23,11 +23,11 @@ if __name__ == '__main__':
     plt.rcParams["figure.figsize"] = (5, 5)
 
     dataset = np.random.binomial(5, 0.5, size=200)
+
+    bootstrapped_animation(make_plot_demo_pie, dataset, m=500, out_file='bootstrapped_pie_chart.gif')
     mat = bootstrapped_plot(make_plot_demo_pie, dataset, m=100, out_file='bootstrapped_pie_chart.png')
 
     plt.figure()
     plt.matshow(mat)
     plt.axis('off')
     plt.show()
-
-    bootstrapped_animation(make_plot_demo_pie, dataset, m=100, out_file='bootstrapped_pie_chart.gif')
