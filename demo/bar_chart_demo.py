@@ -3,8 +3,10 @@ import matplotlib.pyplot as plt
 
 from src import bootstrapped_plot, bootstrapped_animation
 
+N_CLASSES = 20
 
-def make_plot_demo_bar(data, ax, ylim=(0, 100), n_classes=6):
+
+def make_plot_demo_bar(data, ax, ylim=(0, 500), n_classes=N_CLASSES + 1):
     bar_ticks, bar_counts = np.unique(data, return_counts=True)
     bar_ticks_adjusted = np.arange(n_classes)
     bar_counts_adjusted = np.zeros_like(bar_ticks_adjusted, dtype=np.float32)
@@ -19,9 +21,9 @@ if __name__ == '__main__':
 
     plt.rcParams["figure.figsize"] = (5, 5)
 
-    dataset = np.random.binomial(5, 0.5, size=200)
-    
-    bootstrapped_animation(make_plot_demo_bar, dataset, m=500, out_file='bootstrapped_bar_chart.gif')
+    dataset = np.random.binomial(N_CLASSES, 0.2, size=1000)
+
+    bootstrapped_animation(make_plot_demo_bar, dataset, m=400, out_file='bootstrapped_bar_chart.gif', decay=True)
     mat = bootstrapped_plot(make_plot_demo_bar, dataset, m=100, out_file='bootstrapped_bar_chart.png')
 
     plt.figure()

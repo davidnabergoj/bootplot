@@ -1,11 +1,14 @@
 import time
 
+import imageio
+from skimage.feature import hog
 import matplotlib.pyplot as plt
 import numpy as np
 import io
 
 import torch
 from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
 from tqdm import tqdm
 import scipy.spatial.distance
 import scipy.misc
@@ -206,7 +209,90 @@ def sort_images_optical_flow_dense(images):
     return solution
 
 
-def sort_images_tsp(images, m: int, distance='euc'):
+def compute_hog_features(gray_images, threshold=1e-5):
+    # movement_mask = (np.var(gray_images, axis=0) > threshold).astype(np.uint8)
+    # hog_features = np.stack([
+    #     hog(im, cells_per_block=(1, 1), pixels_per_cell=(10, 10), visualize=True)[1][movement_mask.astype(bool)]
+    #     for im in gray_images
+    # ])
+    hog_features = np.stack([hog(im, cells_per_block=(1, 1), pixels_per_cell=(10, 10)) for im in gray_images])
+    hog_features = (hog_features - np.min(hog_features)) / (np.max(hog_features) - np.min(hog_features))
+    return hog_features
+
+
+def compute_center_of_mass(gray_images):
+    centers_of_mass = np.zeros((len(gray_images), 2))
+    for i in range(len(gray_images)):
+        centers_of_mass[i] = scipy.ndimage.center_of_mass(gray_images[i])
+    centers_of_mass /= np.array(gray_images.shape[1:])
+    return centers_of_mass
+
+
+def compute_center_of_mass_per_component(gray_images, threshold=1e-5):
+    movement_mask = (np.var(gray_images, axis=0) > threshold).astype(np.uint8)
+    n_components, label_mask, stats, centroids = cv2.connectedComponentsWithStats(movement_mask)
+    centers = np.zeros((len(gray_images), 2 * n_components - 2))
+    for j, image in enumerate(gray_images):
+        for i in range(1, n_components):
+            center_of_mass = scipy.ndimage.center_of_mass(image, label_mask, i)
+            centers[j, i * 2 - 2:i * 2] = center_of_mass
+    centers /= np.tile(np.array(gray_images.shape[1:]), n_components - 1)
+    return centers
+
+
+def sort_images_pca_2(images):
+    gray_images = np.array([
+        cv2.cvtColor(im, cv2.COLOR_RGB2GRAY).astype(np.float32) / 255
+        for im in images
+    ])
+    hf = compute_hog_features(gray_images)
+    cm = compute_center_of_mass(gray_images)
+    cmc = compute_center_of_mass_per_component(gray_images)
+
+    features = np.c_[hf, cm, cmc]
+
+    # distance_matrix = scipy.spatial.distance.cdist(features, features, "cityblock")
+    model = PCA(n_components=1)
+    # model = TSNE(n_components=1)
+    projections = model.fit_transform(features).ravel()
+    order = list(np.argsort(projections))
+    # print('Solving TSP')
+    # image_graph = nx.from_numpy_array(distance_matrix)
+    # order = nx.algorithms.approximation.traveling_salesman_problem(
+    #     image_graph,
+    #     cycle=False,
+    #     method=nx.algorithms.approximation.traveling_salesman.greedy_tsp
+    # )
+    return order
+    #
+    # movement_mask = np.var(gray_images, axis=0)
+    # ret, labels = cv2.connectedComponents(movement_mask)
+    #
+    # mean_mask = np.mean(gray_images, axis=0)
+    # centroids = np.zeros((len(images), 2 * len(labels)))
+    # for i in range(len(gray_images)):
+    #     velocity_magnitude = np.abs(gray_images[i] - mean_mask)
+    #     for label in labels:
+    #         # movement_mask[]
+    #         pass
+
+    # gray_images = np.array([
+    #     gray_images[i] - np.mean(gray_images, axis=0) for i in range(len(gray_images))
+    # ])
+    # gray_images = np.array([
+    #     cv2.GaussianBlur(im, ksize=tuple(ksize), sigmaX=ksize[0] / 6, sigmaY=ksize[1] / 6)
+    #     for im in gray_images
+    # ])
+
+
+def compute_n_components(images, threshold=1e-5):
+    gray_images = np.array([cv2.cvtColor(im, cv2.COLOR_RGB2GRAY).astype(np.float32) / 255 for im in images])
+    movement_mask = (np.var(gray_images, axis=0) > threshold).astype(np.uint8)
+    n_components, label_mask, stats, centroids = cv2.connectedComponentsWithStats(movement_mask)
+    return n_components - 1
+
+
+def sort_images_tsp(images, m: int, distance='hog'):
     # Compute similarity between matrices
     if distance == 'euc':
         print('Computing pixelwise image similarity')
@@ -215,20 +301,22 @@ def sort_images_tsp(images, m: int, distance='euc'):
         ksize[1] += ksize[1] % 2 - 1
         ksize = ksize[::-1]
         gray_images = np.array([
-            cv2.GaussianBlur(
-                cv2.cvtColor(im, cv2.COLOR_RGB2GRAY).astype(np.float32) / 255,
-                ksize=tuple(ksize),
-                sigmaX=ksize[0] / 6,
-                sigmaY=ksize[1] / 6
-            )
+            cv2.cvtColor(im, cv2.COLOR_RGB2GRAY).astype(np.float32) / 255
             for im in images
+        ])
+        # gray_images = np.array([
+        #     gray_images[i] - np.mean(gray_images, axis=0) for i in range(len(gray_images))
+        # ])
+        gray_images = np.array([
+            cv2.GaussianBlur(im, ksize=tuple(ksize), sigmaX=ksize[0] / 6, sigmaY=ksize[1] / 6)
+            for im in gray_images
         ])
         # convolve with a large kernel so that elements are "spread out"
         bootstrapped_vectors = gray_images.reshape(m, -1)
         distance_matrix = scipy.spatial.distance.cdist(bootstrapped_vectors, bootstrapped_vectors)
         # Not sure if normalization does anything
         distance_matrix = (distance_matrix - np.min(distance_matrix)) / (
-                    np.max(distance_matrix) - np.min(distance_matrix))
+                np.max(distance_matrix) - np.min(distance_matrix))
         # plt.figure()
         # plt.matshow(np.var(gray_images, axis=0))
         # plt.show()
@@ -246,6 +334,13 @@ def sort_images_tsp(images, m: int, distance='euc'):
                     dist = float(swd(im0, im1, device="cpu"))
                     distance_matrix[i, j] = dist
                     distance_matrix[j, i] = dist
+    elif distance == "hog":
+        gray_images = np.array([
+            cv2.cvtColor(im, cv2.COLOR_RGB2GRAY).astype(np.float32) / 255
+            for im in images
+        ])
+        hf = compute_hog_features(gray_images)
+        distance_matrix = scipy.spatial.distance.cdist(hf, hf)
     else:
         raise NotImplementedError(f"Distance {distance} is not implemented.")
     print('Solving TSP')
@@ -314,7 +409,8 @@ def bootstrapped_plot(plot_function, data, m=100, out_file: str = None, resample
 
 
 def bootstrapped_animation(plot_function, data, m=100, out_file: str = None, fps=60, resize=True, sort=True,
-                           decay=False, decay_length=15, resample_in_advance=True, sort_type: str = "tsp"):
+                           decay=False, decay_length=15, resample_in_advance=True, sort_type: str = "tsp",
+                           animation_duration=3):
     fig, ax = plt.subplots()
     if resample_in_advance:
         bootstrapped_matrices = np.stack([
@@ -342,7 +438,9 @@ def bootstrapped_animation(plot_function, data, m=100, out_file: str = None, fps
         elif sort_type == "hm":
             order = sort_images_horizontal_mass(images=resized_images)
         elif sort_type == "pca":
-            order = sort_images_pca(images=resized_images)
+            order = sort_images_pca(images=resized_images, center_mass=True)
+        elif sort_type == "pca2":
+            order = sort_images_pca_2(images=resized_images)
         else:
             raise NotImplementedError(f"Sort type '{sort_type}' not implemented")
         order.extend(order[:-1][::-1])  # go in reverse
@@ -369,13 +467,20 @@ def bootstrapped_animation(plot_function, data, m=100, out_file: str = None, fps
 
     if out_file is not None:
         print('Saving animation')
-        bootstrapped_images = [Image.fromarray(bm) for bm in bootstrapped_matrices]
-        bootstrapped_images[0].save(
-            out_file,
-            save_all=True,
-            append_images=bootstrapped_images[1:],
-            duration=1000 / fps,
-            loop=0
-        )
+        if fps * animation_duration > len(bootstrapped_matrices):
+            image_mask = np.arange(len(bootstrapped_matrices))
+        else:
+            image_mask = np.linspace(0, len(bootstrapped_matrices) - 1, fps * animation_duration).astype(np.int)
+        # print(bootstrapped_matrices[image_mask].shape)
+        imageio.mimwrite(out_file, bootstrapped_matrices[image_mask], format="GIF", fps=fps)
+        # bootstrapped_images = [Image.fromarray(bm) for bm in bootstrapped_matrices]
+        # bootstrapped_images = [bootstrapped_images[i] for i in image_mask]
+        # bootstrapped_images[0].save(
+        #     out_file,
+        #     save_all=True,
+        #     append_images=bootstrapped_images[1:],
+        #     duration=1000 / fps,  # 1000 / len(bootstrapped_images),  # This will make the gif 1 second long
+        #     loop=0
+        # )
 
     return bootstrapped_matrices
