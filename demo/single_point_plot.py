@@ -1,5 +1,5 @@
 import numpy as np
-from src import bootstrapped_plot
+from bootplot import bootplot
 
 
 def make_plot_demo_point_plot(data_subset, data_full, ax):
@@ -16,7 +16,7 @@ if __name__ == '__main__':
     n_observations = 1000
     dataset = np.random.uniform(low=-5.5, high=5.5, size=(n_observations,))
 
-    mat = bootstrapped_plot(
+    mat = bootplot(
         make_plot_demo_point_plot,
         dataset,
         m=100,

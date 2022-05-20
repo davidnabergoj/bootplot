@@ -1,5 +1,5 @@
 import numpy as np
-from src import bootstrapped_plot
+from bootplot import bootplot
 
 
 def make_pie_chart(data_subset, data_full, ax):
@@ -30,7 +30,7 @@ if __name__ == '__main__':
 
     dataset = np.random.binomial(7, 0.2, size=1000)
 
-    bootstrapped_plot(
+    bootplot(
         make_pie_chart,
         dataset,
         m=100,

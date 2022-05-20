@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 from PIL import Image
 
-from src.sorting import sort_images
+from bootplot.sorting import sort_images
 
 
 def fig_to_array(fig, ax):
@@ -50,17 +50,17 @@ def decay_images(images, m: int, decay_length: int):
     return decayed_images
 
 
-def bootstrapped_plot(f: callable,
-                      data: np.ndarray,
-                      m: int = 100,
-                      output_size_px: Tuple[int, int] = (512, 512),
-                      output_image_path: Union[str, Path] = None,
-                      output_animation_path: Union[str, Path] = None,
-                      sort_type: str = 'tsp',
-                      sort_kwargs: dict = None,
-                      decay: int = 0,
-                      fps: int = 60,
-                      verbose: bool = False):
+def bootplot(f: callable,
+             data: np.ndarray,
+             m: int = 100,
+             output_size_px: Tuple[int, int] = (512, 512),
+             output_image_path: Union[str, Path] = None,
+             output_animation_path: Union[str, Path] = None,
+             sort_type: str = 'tsp',
+             sort_kwargs: dict = None,
+             decay: int = 0,
+             fps: int = 60,
+             verbose: bool = False):
     px_size_inches = 1 / plt.rcParams['figure.dpi']
     fig, ax = plt.subplots(figsize=(output_size_px[0] * px_size_inches, output_size_px[1] * px_size_inches))
     bootstrapped_matrices = np.stack([

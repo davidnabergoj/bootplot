@@ -1,5 +1,5 @@
 import numpy as np
-from src import bootstrapped_plot
+from bootplot import bootplot
 
 
 def make_point_plot(data_subset, data_full, ax):
@@ -27,7 +27,7 @@ if __name__ == '__main__':
         j = float(np.random.randint(n_classes))
         dataset[i] = [j, np.random.randn() * j]
 
-    bootstrapped_plot(
+    bootplot(
         make_point_plot,
         dataset,
         m=100,

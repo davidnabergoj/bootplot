@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn.linear_model import LinearRegression
-from src import bootstrapped_plot
+from bootplot import bootplot
 
 
 def make_plot_demo_text(data_subset, data_full, ax):
@@ -32,7 +32,7 @@ if __name__ == '__main__':
     noise = np.random.randn(len(dataset)) * 2.5
     dataset[:, 1] = (dataset[:, 0] * 1.5 + noise) / 5 + 2.551
 
-    bootstrapped_plot(
+    bootplot(
         make_plot_demo_text,
         dataset,
         m=100,

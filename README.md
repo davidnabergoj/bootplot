@@ -1,7 +1,7 @@
-# Bootstrap your plot
+# Bootplot: bootstrap your plot
 
-**Bootstrap your plot** is a library that lets you easily visualize uncertainty. You only need to provide a function
-that generates a plot from your data and pass it to `bootstrapped_plot`. This will generate a static image and an
+**Bootplot** is a library that lets you easily visualize uncertainty. You only need to provide a function
+that generates a plot from your data and pass it to `bootplot`. This will generate a static image and an
 animation of your data uncertainty.
 
 The method works by resampling the original dataset and plotting each bootstrapped sample.
@@ -14,7 +14,7 @@ line and visualize the uncertainty with the following code:
 import numpy as np
 from sklearn.linear_model import LinearRegression
 
-from src import bootstrapped_plot
+from bootplot import bootplot
 
 
 def make_linear_regression(data_subset, data_full, ax):
@@ -41,7 +41,7 @@ if __name__ == '__main__':
     dataset[:, 1] = dataset[:, 0] * 1.5 + 2 + noise
 
     # Create image and animation that show uncertainty
-    bootstrapped_plot(
+    bootplot(
         make_linear_regression,
         dataset,
         output_image_path='bootstrapped_linear_regression.png',

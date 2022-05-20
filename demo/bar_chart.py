@@ -1,5 +1,5 @@
 import numpy as np
-from src import bootstrapped_plot
+from bootplot import bootplot
 
 
 def make_bar_chart(data_subset, data_full, ax):
@@ -21,7 +21,7 @@ if __name__ == '__main__':
     np.random.seed(0)
 
     dataset = np.random.binomial(20, 0.3, size=1000)
-    bootstrapped_plot(
+    bootplot(
         make_bar_chart,
         dataset,
         m=100,
