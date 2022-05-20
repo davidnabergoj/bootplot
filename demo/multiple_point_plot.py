@@ -3,13 +3,16 @@ from src import bootstrapped_plot
 
 
 def make_point_plot(data_subset, data_full, ax):
+    # Get info from the full dataset
     n_classes = len(np.unique(data_full[:, 0]))
 
+    # Plot subset
     for i in range(n_classes):
         if i in data_subset[:, 0]:
             mask = data_subset[:, 0] == i
             ax.scatter(np.mean(data_subset[mask, 1]), i)
 
+    # Define global axis settings
     ax.set_xlim(-n_classes, n_classes)
     ax.set_ylim(-1, n_classes)
 

@@ -3,7 +3,10 @@ from src import bootstrapped_plot
 
 
 def make_plot_demo_point_plot(data_subset, data_full, ax):
+    # Plot subset
     ax.scatter(np.mean(data_subset), 0, s=100)
+
+    # Define global axis settings
     ax.set_xlim(-3, 3)
 
 

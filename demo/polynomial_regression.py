@@ -5,10 +5,10 @@ from src import bootstrapped_plot
 
 
 def make_polynomial_regression(data_subset, data_full, ax):
-    # Plot all points
+    # Plot full dataset
     ax.scatter(data_full[:, 0], data_full[:, 1])
 
-    # Plot regression model on bootstrapped subset
+    # Plot regression model trained on the subset
     poly = PolynomialFeatures(degree=2)
     features = poly.fit_transform(data_subset[:, 0].reshape(-1, 1))
     lr = LinearRegression()
@@ -17,6 +17,8 @@ def make_polynomial_regression(data_subset, data_full, ax):
     xs = np.linspace(-10, 10, 1000)
     xs_features = poly.transform(xs.reshape(-1, 1))
     ax.plot(xs, lr.predict(xs_features), c='r')
+
+    # Define global axis settings
     ax.set_xlim(-10, 10)
     ax.set_ylim(-10, 10)
 

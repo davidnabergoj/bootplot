@@ -5,15 +5,16 @@ from src import bootstrapped_plot
 
 
 def make_linear_regression(data_subset, data_full, ax):
-    # Plot all points
+    # Plot full dataset
     ax.scatter(data_full[:, 0], data_full[:, 1])
 
-    # Plot regression line on bootstrapped subset
+    # Plot regression line trained on the subset
     lr = LinearRegression()
     lr.fit(data_subset[:, 0].reshape(-1, 1), data_subset[:, 1])
     xs = np.linspace(-10, 10, 1000)
     ax.plot(xs, lr.predict(xs.reshape(-1, 1)), c='r')
 
+    # Define global axis settings
     ax.set_xlim(-10, 10)
     ax.set_ylim(-10, 10)
 

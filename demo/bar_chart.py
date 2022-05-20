@@ -3,14 +3,17 @@ from src import bootstrapped_plot
 
 
 def make_bar_chart(data_subset, data_full, ax):
-    # Obtain some required information from the full dataset
+    # Get info from the full dataset
     n_classes = len(np.unique(data_full))
 
+    # Plot subset
     bar_ticks, bar_counts = np.unique(data_subset, return_counts=True)
     bar_ticks_adjusted = np.arange(n_classes)
     bar_counts_adjusted = np.zeros_like(bar_ticks_adjusted, dtype=np.float32)
     bar_counts_adjusted[bar_ticks] = bar_counts
     ax.bar(bar_ticks_adjusted, bar_counts_adjusted)
+
+    # Define global axis settings
     ax.set_ylim(0, 300)
 
 

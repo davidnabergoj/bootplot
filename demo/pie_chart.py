@@ -3,14 +3,16 @@ from src import bootstrapped_plot
 
 
 def make_pie_chart(data_subset, data_full, ax):
+    # Get info from the full dataset
     n_classes = len(np.unique(data_full))
 
+    # Plot subset
     ticks, counts = np.unique(data_subset, return_counts=True)
     ticks_adjusted = np.zeros(n_classes)
     ticks_adjusted[ticks] = counts
-
     wedges, _ = ax.pie(x=ticks_adjusted, explode=0.1 * np.ones(n_classes))
 
+    # Define global axis settings
     ax.set_xlim(-4, 4)
     ax.set_ylim(-4, 4)
     ax.legend(
