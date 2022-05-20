@@ -1,7 +1,8 @@
 import abc
-from typing import List
+from typing import List, Tuple
 import scipy.spatial
 import scipy.ndimage
+import skimage.transform
 import cv2
 import numpy as np
 from sklearn.decomposition import PCA
@@ -266,7 +267,15 @@ class HorizontalMassSorter(Sorter):
         return order
 
 
-def sort_images(images, sort_type="tsp", **kwargs):
+def resize_images(images, target_size=(128, 128)):
+    return np.array([skimage.transform.resize(im, target_size) for im in images])
+
+
+def rgb_to_gray(images):
+    return np.clip((images[..., 0] * 0.299 + images[..., 1] * 0.587 + images[..., 2] * 0.114) / 255, 0, 1)
+
+
+def sort_images(images: np.ndarray, sort_type: str = "tsp", working_size: Tuple[int, int] = None, **kwargs):
     if sort_type == "tsp":
         sorter = TravelingSalesmanSorter()
     elif sort_type == "pca":
@@ -281,9 +290,10 @@ def sort_images(images, sort_type="tsp", **kwargs):
         sorter = DefaultSorter()
     else:
         raise NotImplementedError(f"Sort type '{sort_type}' not implemented")
-    gray_images = np.array([
-        cv2.cvtColor(im, cv2.COLOR_RGB2GRAY).astype(np.float32) / 255
-        for im in images
-    ])
+
+    gray_images = rgb_to_gray(images)
+    if working_size is not None:
+        gray_images = resize_images(gray_images, working_size)
+
     order = sorter.sort(gray_images, **kwargs)
     return order

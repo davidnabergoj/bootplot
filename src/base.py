@@ -29,12 +29,6 @@ def plot_to_array(plot_function, data, indices, fig, ax, **kwargs):
     return data
 
 
-def resize_images(images, target_size=(128, 128)):
-    return np.array([
-        np.array(Image.fromarray(im).resize(target_size)) for im in images
-    ])
-
-
 def merge_matrices(matrices) -> np.ndarray:
     # matrices.shape == (batch_size, width, height, channels)
     # Overwrites source images
