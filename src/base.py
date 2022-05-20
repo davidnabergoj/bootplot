@@ -39,15 +39,14 @@ def merge_matrices(matrices) -> np.ndarray:
 
 
 def decay_images(images, m: int, decay_length: int):
-    decayed_images = np.zeros((m - 1, *images[0].shape), dtype=np.uint8)
-    for i in range(1, m):
-        # matrix_indices = np.arange(max(i - decay_length, 0), i + 1)
+    decayed_images = np.zeros((m, *images[0].shape), dtype=np.uint8)
+    for i in range(m):
         matrix_indices = np.arange(i - decay_length, i)  # Getting frames at the end makes the gif loop smoothly
         weights = np.arange(1, decay_length + 1)
         weights = weights ** 2
         weights = weights / np.sum(weights)
         weights = weights.reshape(-1, 1, 1, 1)
-        decayed_images[i - 1] = (np.sum(images[matrix_indices].astype(np.float32) * weights, axis=0)).astype(np.uint8)
+        decayed_images[i] = (np.sum(images[matrix_indices].astype(np.float32) * weights, axis=0)).astype(np.uint8)
     return decayed_images
 
 
