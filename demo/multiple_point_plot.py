@@ -1,6 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
-
 from src import bootstrapped_plot
 
 
@@ -26,7 +24,7 @@ if __name__ == '__main__':
         j = float(np.random.randint(n_classes))
         dataset[i] = [j, np.random.randn() * j]
 
-    mat = bootstrapped_plot(
+    bootstrapped_plot(
         make_point_plot,
         dataset,
         m=100,
@@ -35,8 +33,3 @@ if __name__ == '__main__':
         sort_type="pca",
         verbose=True
     )
-
-    plt.figure()
-    plt.matshow(mat)
-    plt.axis('off')
-    plt.show()

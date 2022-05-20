@@ -1,6 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
-
 from src import bootstrapped_plot
 
 
@@ -20,7 +18,7 @@ if __name__ == '__main__':
     np.random.seed(0)
 
     dataset = np.random.binomial(20, 0.3, size=1000)
-    mat = bootstrapped_plot(
+    bootstrapped_plot(
         make_bar_chart,
         dataset,
         m=100,
@@ -28,8 +26,3 @@ if __name__ == '__main__':
         output_animation_path='bootstrapped_bar_chart.mp4',
         verbose=True
     )
-
-    plt.figure()
-    plt.matshow(mat)
-    plt.axis('off')
-    plt.show()

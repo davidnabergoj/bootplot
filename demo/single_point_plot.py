@@ -1,6 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
-
 from src import bootstrapped_plot
 
 
@@ -24,8 +22,3 @@ if __name__ == '__main__':
         sort_type="pca",
         verbose=True
     )
-
-    plt.figure()
-    plt.matshow(mat)
-    plt.axis('off')
-    plt.show()

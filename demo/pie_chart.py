@@ -1,6 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
-
 from src import bootstrapped_plot
 
 
@@ -30,7 +28,7 @@ if __name__ == '__main__':
 
     dataset = np.random.binomial(7, 0.2, size=1000)
 
-    mat = bootstrapped_plot(
+    bootstrapped_plot(
         make_pie_chart,
         dataset,
         m=100,
@@ -38,8 +36,3 @@ if __name__ == '__main__':
         output_animation_path='bootstrapped_pie_chart.gif',
         verbose=True
     )
-
-    plt.figure()
-    plt.matshow(mat)
-    plt.axis('off')
-    plt.show()

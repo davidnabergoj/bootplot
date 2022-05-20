@@ -1,7 +1,5 @@
 import numpy as np
-import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
-
 from src import bootstrapped_plot
 
 
@@ -30,7 +28,7 @@ if __name__ == '__main__':
     noise = np.random.randn(len(dataset)) * 2.5
     dataset[:, 1] = (dataset[:, 0] * 1.5 + noise) / 5 + 2.551
 
-    mat = bootstrapped_plot(
+    bootstrapped_plot(
         make_plot_demo_text,
         dataset,
         m=100,
@@ -38,8 +36,3 @@ if __name__ == '__main__':
         output_animation_path='bootstrapped_text.gif',
         verbose=True
     )
-
-    plt.figure()
-    plt.matshow(mat)
-    plt.axis('off')
-    plt.show()
