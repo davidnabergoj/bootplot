@@ -4,7 +4,7 @@
 that generates a plot from your data and pass it to `bootplot`. This will generate a static image and an
 animation of your data uncertainty.
 
-The method works by resampling the original dataset and plotting each bootstrapped sample.
+The method works by resampling the original dataset using bootstrap and plotting each bootstrapped sample.
 The plots are then combined into a single image or an animation.
 
 As an example, suppose we have some data and their corresponding targets. We can model our targets with a regression
