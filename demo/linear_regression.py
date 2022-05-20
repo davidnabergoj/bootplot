@@ -31,7 +31,8 @@ if __name__ == '__main__':
         dataset,
         m=100,
         output_image_path='bootstrapped_linear_regression.png',
-        output_animation_path='bootstrapped_linear_regression.gif'
+        output_animation_path='bootstrapped_linear_regression.gif',
+        verbose=True
     )
 
     plt.figure()

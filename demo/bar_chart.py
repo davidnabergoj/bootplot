@@ -25,7 +25,8 @@ if __name__ == '__main__':
         dataset,
         m=100,
         output_image_path='bootstrapped_bar_chart.png',
-        output_animation_path='bootstrapped_bar_chart.mp4'
+        output_animation_path='bootstrapped_bar_chart.mp4',
+        verbose=True
     )
 
     plt.figure()

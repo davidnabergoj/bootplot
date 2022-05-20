@@ -21,7 +21,8 @@ if __name__ == '__main__':
         m=100,
         output_image_path='bootstrapped_single_point_plot.png',
         output_animation_path='bootstrapped_single_point_plot.gif',
-        sort_type="pca"
+        sort_type="pca",
+        verbose=True
     )
 
     plt.figure()

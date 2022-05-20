@@ -61,12 +61,13 @@ def bootstrapped_plot(f: callable,
                       sort_kwargs: dict = None,
                       decay: bool = False,
                       decay_length: int = 1,
-                      fps: int = 60):
+                      fps: int = 60,
+                      verbose:bool=False):
     px_size_inches = 1 / plt.rcParams['figure.dpi']
     fig, ax = plt.subplots(figsize=(output_size_px[0] * px_size_inches, output_size_px[1] * px_size_inches))
     bootstrapped_matrices = np.stack([
         plot_to_array(f, data, np.random.randint(low=0, high=len(data), size=len(data)), fig, ax)
-        for _ in tqdm(range(m), desc='Generating plots')
+        for _ in tqdm(range(m), desc='Generating plots', disable=not verbose)
     ])
     merged_matrices = merge_matrices(bootstrapped_matrices)
     plt.close(fig)
@@ -75,7 +76,7 @@ def bootstrapped_plot(f: callable,
         Image.fromarray(merged_matrices).save(output_image_path)
     if output_animation_path is not None:
         sort_kwargs = dict() if sort_kwargs is None else sort_kwargs
-        order = sort_images(bootstrapped_matrices, sort_type, **sort_kwargs)
+        order = sort_images(bootstrapped_matrices, sort_type, verbose=verbose, **sort_kwargs)
         order.extend(order[:-1][::-1])  # go in reverse
         order = np.array(order)
         bootstrapped_matrices = bootstrapped_matrices[order]

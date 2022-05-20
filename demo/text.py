@@ -35,7 +35,8 @@ if __name__ == '__main__':
         dataset,
         m=100,
         output_image_path='bootstrapped_text.png',
-        output_animation_path='bootstrapped_text.gif'
+        output_animation_path='bootstrapped_text.gif',
+        verbose=True
     )
 
     plt.figure()

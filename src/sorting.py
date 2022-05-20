@@ -15,9 +15,16 @@ from src.image_features import compute_hog_features, compute_center_of_mass, com
 
 
 class Sorter(abc.ABC):
+    def __init__(self, verbose: bool = False):
+        self.verbose = verbose
+
     @abc.abstractmethod
     def sort(self, images, **kwargs) -> List[int]:
         pass
+
+    def verbose_print(self, *args, **kwargs):
+        if self.verbose:
+            print(*args, **kwargs)
 
 
 class DefaultSorter(Sorter):
@@ -29,7 +36,8 @@ class LucasKanadeSorter(Sorter):
     def __init__(self,
                  corner_detection_params: dict = None,
                  lucas_kanade_params: dict = None,
-                 genetic_algorithm_params: dict = None):
+                 genetic_algorithm_params: dict = None,
+                 verbose: bool = False):
         """
         Sort images using an optical flow approach.
 
@@ -40,6 +48,7 @@ class LucasKanadeSorter(Sorter):
         :param corner_detection_params: parameters for Shi-Tomasi corner detection.
         :param lucas_kanade_params: parameters for Lucas Kanade optical flow computations.
         """
+        super().__init__(verbose=verbose)
         if corner_detection_params is None:
             corner_detection_params = dict(
                 maxCorners=100,
@@ -121,7 +130,8 @@ class FarnebackSorter(Sorter):
     def __init__(self,
                  population_size: int = 100,
                  farneback_params: dict = None,
-                 genetic_algorithm_params: dict = None):
+                 genetic_algorithm_params: dict = None,
+                 verbose: bool = False):
         """
         Sorts plots.
 
@@ -134,6 +144,7 @@ class FarnebackSorter(Sorter):
         Mutation means swapping two images at random.
         Crossover means splitting the ordering at some point and concatenating alternating ends for two individuals.
         """
+        super().__init__(verbose=verbose)
         if farneback_params is None:
             farneback_params = dict(
                 pyr_scale=0.5,
@@ -244,9 +255,9 @@ class TravelingSalesmanSorter(Sorter):
         return distance_matrix
 
     def sort(self, gray_images, features="full", **kwargs) -> List[int]:
-        print("Computing distance matrix")
+        self.verbose_print("Computing distance matrix")
         distance_matrix = self.distance_matrix(gray_images, features=features)
-        print('Solving TSP')
+        self.verbose_print('Solving TSP')
         image_graph = nx.from_numpy_array(distance_matrix)
         order = nx.algorithms.approximation.traveling_salesman_problem(image_graph, cycle=False)
         return order
@@ -275,19 +286,23 @@ def rgb_to_gray(images):
     return np.clip((images[..., 0] * 0.299 + images[..., 1] * 0.587 + images[..., 2] * 0.114) / 255, 0, 1)
 
 
-def sort_images(images: np.ndarray, sort_type: str = "tsp", working_size: Tuple[int, int] = None, **kwargs):
+def sort_images(images: np.ndarray,
+                sort_type: str = "tsp",
+                verbose: bool = False,
+                working_size: Tuple[int, int] = None,
+                **kwargs):
     if sort_type == "tsp":
-        sorter = TravelingSalesmanSorter()
+        sorter = TravelingSalesmanSorter(verbose=verbose)
     elif sort_type == "pca":
-        sorter = PCASorter()
+        sorter = PCASorter(verbose=verbose)
     elif sort_type == "lk":
-        sorter = LucasKanadeSorter()
+        sorter = LucasKanadeSorter(verbose=verbose)
     elif sort_type == "hm":
-        sorter = HorizontalMassSorter()
+        sorter = HorizontalMassSorter(verbose=verbose)
     elif sort_type == "fb":
-        sorter = FarnebackSorter()
+        sorter = FarnebackSorter(verbose=verbose)
     elif sort_type == "none":
-        sorter = DefaultSorter()
+        sorter = DefaultSorter(verbose=verbose)
     else:
         raise NotImplementedError(f"Sort type '{sort_type}' not implemented")
 
