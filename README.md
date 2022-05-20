@@ -1,6 +1,6 @@
 # Bootplot: bootstrap your plot
 
-**Bootplot** is a library that lets you easily visualize uncertainty. You only need to provide a function
+**Bootplot** is a package that lets you easily visualize uncertainty. You only need to provide a function
 that generates a plot from your data and pass it to `bootplot`. This will generate a static image and an
 animation of your data uncertainty.
 
