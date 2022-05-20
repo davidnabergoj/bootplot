@@ -19,6 +19,11 @@ class Sorter(abc.ABC):
         pass
 
 
+class DefaultSorter(Sorter):
+    def sort(self, images, **kwargs) -> List[int]:
+        return list(range(len(images)))  # Does not sort
+
+
 class LucasKanadeSorter(Sorter):
     def __init__(self,
                  corner_detection_params: dict = None,
@@ -261,20 +266,21 @@ class HorizontalMassSorter(Sorter):
         return order
 
 
-def sort_images(images, sort_type="tsp", sorter: Sorter = None, **kwargs):
-    if sorter is None:
-        if sort_type == "tsp":
-            sorter = TravelingSalesmanSorter()
-        elif sort_type == "pca":
-            sorter = PCASorter()
-        elif sort_type == "lk":
-            sorter = LucasKanadeSorter()
-        elif sort_type == "hm":
-            sorter = HorizontalMassSorter()
-        elif sort_type == "fb":
-            sorter = FarnebackSorter()
-        else:
-            raise NotImplementedError(f"Sort type '{sort_type}' not implemented")
+def sort_images(images, sort_type="tsp", **kwargs):
+    if sort_type == "tsp":
+        sorter = TravelingSalesmanSorter()
+    elif sort_type == "pca":
+        sorter = PCASorter()
+    elif sort_type == "lk":
+        sorter = LucasKanadeSorter()
+    elif sort_type == "hm":
+        sorter = HorizontalMassSorter()
+    elif sort_type == "fb":
+        sorter = FarnebackSorter()
+    elif sort_type == "none":
+        sorter = DefaultSorter()
+    else:
+        raise NotImplementedError(f"Sort type '{sort_type}' not implemented")
     gray_images = np.array([
         cv2.cvtColor(im, cv2.COLOR_RGB2GRAY).astype(np.float32) / 255
         for im in images

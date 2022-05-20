@@ -1,3 +1,6 @@
+from pathlib import Path
+from typing import Union, Tuple
+
 import numpy as np
 import imageio
 import io
@@ -19,9 +22,9 @@ def fig_to_array(fig, ax):
     return im
 
 
-def plot_to_array(plot_function, data, fig, ax, **kwargs):
+def plot_to_array(plot_function, data, indices, fig, ax, **kwargs):
     # plot_function should plot onto ax
-    plot_function(data, ax, **kwargs)
+    plot_function(data[indices], data, ax, **kwargs)
     data = fig_to_array(fig, ax)
     return data
 
@@ -54,60 +57,39 @@ def decay_images(images, m: int, decay_length: int):
     return decayed_images
 
 
-def bootstrapped_plot(plot_function, data, m=100, out_file: str = None, resample_in_advance=True):
-    # plot function receives data as the first argument and ax as the second one
-    fig, ax = plt.subplots()
-    if resample_in_advance:
-        bootstrapped_matrices = np.stack([
-            plot_to_array(plot_function, data[np.random.randint(low=0, high=len(data), size=len(data))], fig, ax)
-            for _ in tqdm(range(m), desc='Generating bootstrapped plots')
-        ])
-    else:
-        bootstrapped_matrices = np.stack([
-            plot_to_array(plot_function, data, fig, ax) for _ in tqdm(range(m), desc='Generating bootstrapped plots')
-        ])
+def bootstrapped_plot(f: callable,
+                      data: np.ndarray,
+                      m: int = 100,
+                      output_size_px: Tuple[int, int] = (512, 512),
+                      output_image_path: Union[str, Path] = None,
+                      output_animation_path: Union[str, Path] = None,
+                      sort_type: str = 'tsp',
+                      sort_kwargs: dict = None,
+                      decay: bool = False,
+                      decay_length: int = 1,
+                      fps: int = 60):
+    px_size_inches = 1 / plt.rcParams['figure.dpi']
+    fig, ax = plt.subplots(figsize=(output_size_px[0] * px_size_inches, output_size_px[1] * px_size_inches))
+    bootstrapped_matrices = np.stack([
+        plot_to_array(f, data, np.random.randint(low=0, high=len(data), size=len(data)), fig, ax)
+        for _ in tqdm(range(m), desc='Generating plots')
+    ])
     merged_matrices = merge_matrices(bootstrapped_matrices)
     plt.close(fig)
 
-    if out_file is not None:
-        out_im = Image.fromarray(merged_matrices)
-        out_im.save(out_file)
-
-    return merged_matrices
-
-
-def bootstrapped_animation(plot_function, data, m=100, out_file: str = None, fps=60, resize=True, sort=True,
-                           decay=False, decay_length=15, resample_in_advance=True, sort_type: str = "tsp",
-                           animation_duration=3):
-    fig, ax = plt.subplots()
-    if resample_in_advance:
-        bootstrapped_matrices = np.stack([
-            plot_to_array(plot_function, data[np.random.randint(low=0, high=len(data), size=len(data))], fig, ax)
-            for _ in tqdm(range(m), desc='Generating bootstrapped plots')
-        ])
-    else:
-        bootstrapped_matrices = np.stack([
-            plot_to_array(plot_function, data, fig, ax) for _ in tqdm(range(m), desc='Generating bootstrapped plots')
-        ])
-    plt.close(fig)
-
-    if sort:
-        order = sort_images(
-            resize_images(bootstrapped_matrices) if resize else bootstrapped_matrices,
-            sort_type=sort_type
-        )
+    if output_image_path is not None:
+        Image.fromarray(merged_matrices).save(output_image_path)
+    if output_animation_path is not None:
+        sort_kwargs = dict() if sort_kwargs is None else sort_kwargs
+        order = sort_images(bootstrapped_matrices, sort_type, **sort_kwargs)
         order.extend(order[:-1][::-1])  # go in reverse
         order = np.array(order)
         bootstrapped_matrices = bootstrapped_matrices[order]
-    if decay:
-        bootstrapped_matrices = decay_images(bootstrapped_matrices, m=m, decay_length=decay_length)
 
-    if out_file is not None:
-        print('Saving animation')
-        if fps * animation_duration > len(bootstrapped_matrices):
-            image_mask = np.arange(len(bootstrapped_matrices))
-        else:
-            image_mask = np.linspace(0, len(bootstrapped_matrices) - 1, fps * animation_duration).astype(np.int)
-        imageio.mimwrite(out_file, bootstrapped_matrices[image_mask], format="GIF", fps=fps)
+        # Apply decay
+        if decay:
+            bootstrapped_matrices = decay_images(bootstrapped_matrices, m=m, decay_length=decay_length)
 
-    return bootstrapped_matrices
+        imageio.mimwrite(output_animation_path, bootstrapped_matrices, fps=fps)
+
+    return merged_matrices
