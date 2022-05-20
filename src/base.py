@@ -39,7 +39,7 @@ def merge_matrices(matrices) -> np.ndarray:
 
 
 def decay_images(images, m: int, decay_length: int):
-    decayed_images = np.zeros(m - 1, images[0].shape[1:], dtype=np.uint8)
+    decayed_images = np.zeros((m - 1, *images[0].shape), dtype=np.uint8)
     for i in range(1, m):
         # matrix_indices = np.arange(max(i - decay_length, 0), i + 1)
         matrix_indices = np.arange(i - decay_length, i)  # Getting frames at the end makes the gif loop smoothly
@@ -47,7 +47,7 @@ def decay_images(images, m: int, decay_length: int):
         weights = weights ** 2
         weights = weights / np.sum(weights)
         weights = weights.reshape(-1, 1, 1, 1)
-        decayed_images[i] = (np.sum(images[matrix_indices].astype(np.float32) * weights, axis=0)).astype(np.uint8)
+        decayed_images[i - 1] = (np.sum(images[matrix_indices].astype(np.float32) * weights, axis=0)).astype(np.uint8)
     return decayed_images
 
 
@@ -59,10 +59,9 @@ def bootstrapped_plot(f: callable,
                       output_animation_path: Union[str, Path] = None,
                       sort_type: str = 'tsp',
                       sort_kwargs: dict = None,
-                      decay: bool = False,
-                      decay_length: int = 1,
+                      decay: int = 0,
                       fps: int = 60,
-                      verbose:bool=False):
+                      verbose: bool = False):
     px_size_inches = 1 / plt.rcParams['figure.dpi']
     fig, ax = plt.subplots(figsize=(output_size_px[0] * px_size_inches, output_size_px[1] * px_size_inches))
     bootstrapped_matrices = np.stack([
@@ -82,8 +81,8 @@ def bootstrapped_plot(f: callable,
         bootstrapped_matrices = bootstrapped_matrices[order]
 
         # Apply decay
-        if decay:
-            bootstrapped_matrices = decay_images(bootstrapped_matrices, m=m, decay_length=decay_length)
+        if decay > 0:
+            bootstrapped_matrices = decay_images(bootstrapped_matrices, m=m, decay_length=decay)
 
         imageio.mimwrite(output_animation_path, bootstrapped_matrices, fps=fps)
 
