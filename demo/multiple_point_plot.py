@@ -1,5 +1,5 @@
 import numpy as np
-from bootplot import bootplot
+from src.bootplot.base import bootplot
 
 
 def make_point_plot(data_subset, data_full, ax):

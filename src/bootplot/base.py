@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 from PIL import Image
 
-from bootplot.sorting import sort_images
+from src.bootplot.sorting import sort_images
 
 
 def fig_to_array(fig, ax):
