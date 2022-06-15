@@ -11,34 +11,76 @@ from PIL import Image
 from bootplot.sorting import sort_images
 
 
-def fig_to_array(fig, ax):
+def fig_to_array(fig: plt.Figure,
+                 ax: plt.Axes) -> np.array:
+    """
+    Retrieve array of pixels from a figure.
+    The Axis is cleared afterwards.
+
+    :param fig: figure with the plot. The figure should contain a single Axes object.
+    :param ax: axis with the plot.
+    :return: numpy array of pixels of the plot.
+    """
     with io.BytesIO() as buff:
         fig.savefig(buff, format='raw')
         buff.seek(0)
         data = np.frombuffer(buff.getvalue(), dtype=np.uint8)
     w, h = fig.canvas.get_width_height()
     im = data.reshape((int(h), int(w), -1))
-    ax.cla()  # Clear axis
+    ax.cla()
     return im
 
 
-def plot_to_array(plot_function, data, indices, fig, ax, **kwargs):
-    # plot_function should plot onto ax
+def plot_to_array(plot_function: callable,
+                  data: np.ndarray,
+                  indices: np.ndarray,
+                  fig: plt.Figure,
+                  ax: plt.Axes,
+                  **kwargs) -> np.ndarray:
+    """
+    Plot data and obtain image.
+
+    :param plot_function: function to do the plotting. The function should receive the data subset, original data, Axes
+        object and optional keyword arguments.
+    :param data: full data to be used in plotting.
+    :param indices: bootstrap resampled indices of the data.
+    :param fig: Figure object with a single Axes.
+    :param ax: Axes object.
+    :param kwargs: keyword arguments to plot_function.
+    :return: image.
+    """
     plot_function(data[indices], data, ax, **kwargs)
     data = fig_to_array(fig, ax)
     return data
 
 
-def merge_matrices(matrices) -> np.ndarray:
-    # matrices.shape == (batch_size, width, height, channels)
-    # Overwrites source images
-    matrices = matrices.astype(np.float32) / 255  # Cast to float
-    merged = np.mean(matrices, axis=0)
+def merge_images(images: np.ndarray) -> np.ndarray:
+    """
+    Merge images into a static image (averaged image).
+    The shape of images is (batch_size, width, height, channels).
+    This operation overwrites input images.
+
+    :param images: images corresponding to different bootstrap resamples.
+    :return: merged image.
+    """
+    images = images.astype(np.float32) / 255  # Cast to float
+    merged = np.mean(images, axis=0)
     merged = (merged * 255).astype(np.uint8)
     return merged
 
 
-def decay_images(images, m: int, decay_length: int):
+def decay_images(images: np.ndarray,
+                 m: int,
+                 decay_length: int) -> np.ndarray:
+    """
+    Apply visual decay to images.
+    Once applied, images[t] will contain a weighted sum of images from t - decay_length to t.
+
+    :param images: array of images corresponding to different bootstrap samples.
+    :param m: number of bootstrap samples.
+    :param decay_length: consider this many preceding images when creating a decayed image.
+    :return: decayed images with the same shape as input images.
+    """
     decayed_images = np.zeros((m, *images[0].shape), dtype=np.uint8)
     for i in range(m):
         matrix_indices = np.arange(i - decay_length, i)  # Getting frames at the end makes the gif loop smoothly
@@ -60,29 +102,47 @@ def bootplot(f: callable,
              sort_kwargs: dict = None,
              decay: int = 0,
              fps: int = 60,
-             verbose: bool = False):
+             verbose: bool = False) -> np.ndarray:
+    """
+    Create a bootstrapped plot.
+
+    :param f: function to perform the plotting. The function should receive the data subset, original data, Axes object.
+    :param data: data to be used in plotting.
+    :param m: number of boostrap resamples.
+    :param output_size_px: output size (width, height) in pixels.
+    :param output_image_path: path where the image should be stored. If None, the image is not stored.
+    :param output_animation_path: path where the animation should be stored. If None, the animation is not created.
+    :param sort_type: method to sort images when constructing the animation. Should be one of the following:
+        "tsp" (traveling salesman method on the image similarity graph), "pca" (image projection onto the real line
+        using PCA), "hm" (order using center mass in the horizontal direction), "none" (no sorting; random order).
+    :param sort_kwargs: keyword arguments for the sorting method. See bootplot.sorting.sort_images for details.
+    :param decay: decay length when creating the animation. If 0, no decay is applied.
+    :param fps: desired output framerate for the animation.
+    :param verbose: if True, print progress messages.
+    :return: bootstrapped plot as a numpy array.
+    """
     px_size_inches = 1 / plt.rcParams['figure.dpi']
     fig, ax = plt.subplots(figsize=(output_size_px[0] * px_size_inches, output_size_px[1] * px_size_inches))
-    bootstrapped_matrices = np.stack([
+    image_samples = np.stack([
         plot_to_array(f, data, np.random.randint(low=0, high=len(data), size=len(data)), fig, ax)
         for _ in tqdm(range(m), desc='Generating plots', disable=not verbose)
     ])
-    merged_matrices = merge_matrices(bootstrapped_matrices)
+    merged_image = merge_images(image_samples)
     plt.close(fig)
 
     if output_image_path is not None:
-        Image.fromarray(merged_matrices).save(output_image_path)
+        Image.fromarray(merged_image).save(output_image_path)
     if output_animation_path is not None:
         sort_kwargs = dict() if sort_kwargs is None else sort_kwargs
-        order = sort_images(bootstrapped_matrices, sort_type, verbose=verbose, **sort_kwargs)
+        order = sort_images(image_samples, sort_type, verbose=verbose, **sort_kwargs)
         order.extend(order[:-1][::-1])  # go in reverse
         order = np.array(order)
-        bootstrapped_matrices = bootstrapped_matrices[order]
+        image_samples = image_samples[order]
 
         # Apply decay
         if decay > 0:
-            bootstrapped_matrices = decay_images(bootstrapped_matrices, m=m, decay_length=decay)
+            image_samples = decay_images(image_samples, m=m, decay_length=decay)
 
-        imageio.mimwrite(output_animation_path, bootstrapped_matrices, fps=fps)
+        imageio.mimwrite(output_animation_path, image_samples, fps=fps)
 
-    return merged_matrices
+    return merged_image
