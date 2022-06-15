@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn.linear_model import LinearRegression
-from bootplot import bootplot
+from src.bootplot.base import bootplot
 
 
 def make_plot_demo_text(data_subset, data_full, ax):

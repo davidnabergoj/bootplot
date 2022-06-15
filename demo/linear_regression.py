@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn.linear_model import LinearRegression
 
-from bootplot import bootplot
+from src.bootplot.base import bootplot
 
 
 def make_linear_regression(data_subset, data_full, ax):
