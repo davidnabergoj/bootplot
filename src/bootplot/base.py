@@ -109,7 +109,7 @@ def bootplot(f: callable,
     :param f: function to perform the plotting. The function should receive the data subset, original data, Axes object.
     :param data: data to be used in plotting.
     :param m: number of boostrap resamples.
-    :param output_size_px: output size (width, height) in pixels.
+    :param output_size_px: output size (height, width) in pixels.
     :param output_image_path: path where the image should be stored. If None, the image is not stored.
     :param output_animation_path: path where the animation should be stored. If None, the animation is not created.
     :param sort_type: method to sort images when constructing the animation. Should be one of the following:
