@@ -51,3 +51,4 @@ if __name__ == '__main__':
 ```
 
 See the `demo` folder for more examples, including bar charts, point plots, polynomial regression models, pie charts and text plots.
+Note that some examples require a working installation of scikit-learn.
