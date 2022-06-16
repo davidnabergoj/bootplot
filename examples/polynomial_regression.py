@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
-from src.bootplot.base import bootplot
+from bootplot import bootplot
 
 
 def make_polynomial_regression(data_subset, data_full, ax):

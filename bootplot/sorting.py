@@ -9,7 +9,7 @@ from sklearn.decomposition import PCA
 import scipy
 import networkx as nx
 
-from src.bootplot.image_features import compute_hog_features, compute_center_of_mass, compute_center_of_mass_per_component
+from bootplot.image_features import compute_hog_features, compute_center_of_mass, compute_center_of_mass_per_component
 
 
 class Sorter(abc.ABC):

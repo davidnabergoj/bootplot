@@ -1,5 +1,5 @@
 import numpy as np
-from src.bootplot.base import bootplot
+from bootplot import bootplot
 
 
 def make_pie_chart(data_subset, data_full, ax):
