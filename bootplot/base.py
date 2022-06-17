@@ -36,6 +36,8 @@ def plot_to_array(plot_function: callable,
                   indices: np.ndarray,
                   fig: plt.Figure,
                   ax: plt.Axes,
+                  xlim: Tuple[float, float] = (None, None),
+                  ylim: Tuple[float, float] = (None, None),
                   **kwargs) -> np.ndarray:
     """
     Plot data and obtain image.
@@ -46,10 +48,14 @@ def plot_to_array(plot_function: callable,
     :param indices: bootstrap resampled indices of the data.
     :param fig: Figure object with a single Axes.
     :param ax: Axes object.
+    :param xlim: x axis limits.
+    :param ylim: y axis limits.
     :param kwargs: keyword arguments to plot_function.
     :return: image.
     """
     plot_function(data[indices], data, ax, **kwargs)
+    ax.set_xlim(*xlim)
+    ax.set_ylim(*ylim)
     data = fig_to_array(fig, ax)
     return data
 
@@ -102,6 +108,8 @@ def bootplot(f: callable,
              sort_kwargs: dict = None,
              decay: int = 0,
              fps: int = 60,
+             xlim: Tuple[float, float] = (None, None),
+             ylim: Tuple[float, float] = (None, None),
              verbose: bool = False) -> np.ndarray:
     """
     Create a bootstrapped plot.
@@ -118,13 +126,15 @@ def bootplot(f: callable,
     :param sort_kwargs: keyword arguments for the sorting method. See bootplot.sorting.sort_images for details.
     :param decay: decay length when creating the animation. If 0, no decay is applied.
     :param fps: desired output framerate for the animation.
+    :param xlim: x axis limits.
+    :param ylim: y axis limits.
     :param verbose: if True, print progress messages.
     :return: bootstrapped plot as a numpy array.
     """
     px_size_inches = 1 / plt.rcParams['figure.dpi']
     fig, ax = plt.subplots(figsize=(output_size_px[0] * px_size_inches, output_size_px[1] * px_size_inches))
     image_samples = np.stack([
-        plot_to_array(f, data, np.random.randint(low=0, high=len(data), size=len(data)), fig, ax)
+        plot_to_array(f, data, np.random.randint(low=0, high=len(data), size=len(data)), fig, ax, xlim=xlim, ylim=ylim)
         for _ in tqdm(range(m), desc='Generating plots', disable=not verbose)
     ])
     merged_image = merge_images(image_samples)

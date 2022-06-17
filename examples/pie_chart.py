@@ -12,9 +12,6 @@ def make_pie_chart(data_subset, data_full, ax):
     ticks_adjusted[ticks] = counts
     wedges, _ = ax.pie(x=ticks_adjusted, explode=0.1 * np.ones(n_classes))
 
-    # Define global axis settings
-    ax.set_xlim(-4, 4)
-    ax.set_ylim(-4, 4)
     ax.legend(
         wedges,
         list(range(n_classes)),
@@ -36,5 +33,7 @@ if __name__ == '__main__':
         m=100,
         output_image_path='bootstrapped_pie_chart.png',
         output_animation_path='bootstrapped_pie_chart.gif',
+        xlim=(-4, 4),
+        ylim=(-4, 4),
         verbose=True
     )

@@ -27,10 +27,6 @@ def make_linear_regression(data_subset, data_full, ax):
     xs = np.linspace(-10, 10, 1000)
     ax.plot(xs, lr.predict(xs.reshape(-1, 1)), c='r')
 
-    # Define global axis settings
-    ax.set_xlim(-10, 10)
-    ax.set_ylim(-10, 10)
-
 
 if __name__ == '__main__':
     np.random.seed(0)
@@ -46,6 +42,8 @@ if __name__ == '__main__':
         dataset,
         output_image_path='bootstrapped_linear_regression.png',
         output_animation_path='bootstrapped_linear_regression.gif',
+        xlim=(-10, 10),
+        ylim=(-10, 10),
         verbose=True
     )
 ```
