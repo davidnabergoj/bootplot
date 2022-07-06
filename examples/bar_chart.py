@@ -3,8 +3,7 @@ from bootplot import bootplot
 
 
 def make_bar_chart(data_subset, data_full, ax):
-    # Get info from the full dataset
-    n_classes = len(np.unique(data_full))
+    n_classes = 20
 
     # Plot subset
     bar_ticks, bar_counts = np.unique(data_subset, return_counts=True)

@@ -137,7 +137,7 @@ def bootplot(f: callable,
         plot_to_array(f, data, np.random.randint(low=0, high=len(data), size=len(data)), fig, ax, xlim=xlim, ylim=ylim)
         for _ in tqdm(range(m), desc='Generating plots', disable=not verbose)
     ])
-    merged_image = merge_images(image_samples)
+    merged_image = merge_images(image_samples)[..., :3]  # Do not use the alpha channel
     plt.close(fig)
 
     if output_image_path is not None:
