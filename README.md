@@ -50,3 +50,17 @@ if __name__ == '__main__':
 
 See the `examples` folder for more examples, including bar charts, point plots, polynomial regression models, pie charts and text plots.
 Note that some examples require a working installation of [scikit-learn](https://scikit-learn.org/stable/install.html). You can install scikit-learn with `pip install -U scikit-learn`.
+
+## Installation
+
+**Bootplot** requires Python version 3.7 or greater. You can install **Bootplot** using: 
+```
+pip install bootplot
+```
+
+Alternatively, you can install **Bootplot** locally:
+```
+git clone https://github.com/davidnabergoj/bootplot
+cd bootplot
+pip install .
+```
