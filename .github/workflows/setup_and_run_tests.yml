@@ -1,4 +1,4 @@
-name: Setup bootplot and run tests
+name: Run tests
 
 on:
   push:
