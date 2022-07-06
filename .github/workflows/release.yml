@@ -1,4 +1,4 @@
-name: Build bootplot, test it and release it to PyPI & GitHub
+name: Build-test-release
 
 on:
   workflow_dispatch:
