@@ -1,4 +1,4 @@
-name: Build-test-release
+name: Build/test/release
 
 on:
   workflow_dispatch:
@@ -10,6 +10,7 @@ on:
 
 jobs:
   build-n-publish:
+    permissions: write-all
     name: Build and publish to PyPI
     runs-on: ubuntu-latest
 
@@ -20,7 +21,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: "3.x"
+          python-version: "3.7"
 
       - name: Build source and wheel distributions
         run: |
