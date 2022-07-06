@@ -7,7 +7,9 @@ animation of your data uncertainty.
 The method works by resampling the original dataset using bootstrap and plotting each bootstrapped sample.
 The plots are then combined into a single image or an animation.
 
-As an example, suppose we have some data and their corresponding targets. We can model our targets with a regression
+# Example
+
+Suppose we have some data and their corresponding targets. We can model our targets with a regression
 line and visualize the uncertainty with the following code:
 
 ```python 
