@@ -1,5 +1,6 @@
 import pathlib
 from bootplot import bootplot
+from bootplot.base import merge_images
 import numpy as np
 import shutil
 
@@ -32,6 +33,7 @@ def test_png():
     x = make_dataset()
     bootplot(make_bar_chart, x, m=5, output_image_path=image_path)
     assert image_path.exists()
+    shutil.rmtree(directory)
 
 
 def test_jpg():
@@ -41,18 +43,44 @@ def test_jpg():
     x = make_dataset()
     bootplot(make_bar_chart, x, m=5, output_image_path=image_path)
     assert image_path.exists()
+    shutil.rmtree(directory)
 
 
 def test_gif():
     # should generate gif
-    pass
+    directory = make_directory()
+    animation_path = directory / 'test.gif'
+    x = make_dataset()
+    bootplot(make_bar_chart, x, m=5, output_animation_path=animation_path)
+    assert animation_path.exists()
+    shutil.rmtree(directory)
 
 
 def test_mp4():
     # should generate mp4
-    pass
+    directory = make_directory()
+    animation_path = directory / 'test.mp4'
+    x = make_dataset()
+    bootplot(make_bar_chart, x, m=5, output_animation_path=animation_path)
+    assert animation_path.exists()
+    shutil.rmtree(directory)
 
 
 def test_bmp():
     # should generate bmp
-    pass
+    directory = make_directory()
+    image_path = directory / 'test.bmp'
+    x = make_dataset()
+    bootplot(make_bar_chart, x, m=5, output_image_path=image_path)
+    assert image_path.exists()
+    shutil.rmtree(directory)
+
+
+def test_merge():
+    np.random.seed(0)
+    images = np.random.randint(low=0, high=256, size=(25, 100, 100, 4))
+    merged = merge_images(images)
+    assert merged.shape == (100, 100, 4)
+    assert np.min(merged) >= 0
+    assert np.max(merged) <= 255
+    assert merged.dtype == np.uint8
