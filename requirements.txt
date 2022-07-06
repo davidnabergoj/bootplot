@@ -6,6 +6,6 @@ tqdm~=4.64.0
 pillow>=8
 scipy>=1.5
 scikit-image>=0.17
-networkx~=2.6.3
+networkx>=2.5
 scikit-learn~=1.0.2
 opencv-python~=4.5.5
