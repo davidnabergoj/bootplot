@@ -2,3 +2,5 @@
 *.jpg
 *.gif
 *.mp4
+!demo_animation.gif
+!demo_image.png
