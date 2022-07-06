@@ -141,6 +141,8 @@ def bootplot(f: callable,
     plt.close(fig)
 
     if output_image_path is not None:
+        if verbose:
+            print(f'Saving bootstrapped image to {output_image_path}')
         Image.fromarray(merged_image).save(output_image_path)
     if output_animation_path is not None:
         sort_kwargs = dict() if sort_kwargs is None else sort_kwargs
@@ -154,5 +156,7 @@ def bootplot(f: callable,
             image_samples = decay_images(image_samples, m=m, decay_length=decay)
 
         imageio.mimwrite(output_animation_path, image_samples, fps=fps)
+        if verbose:
+            print(f'Saving bootstrapped animation to {output_animation_path}')
 
     return merged_image
