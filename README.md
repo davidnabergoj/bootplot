@@ -49,7 +49,6 @@ if __name__ == '__main__':
 ```
 
 See the `examples` folder for more examples, including bar charts, point plots, polynomial regression models, pie charts and text plots.
-Note that some examples require a working installation of [scikit-learn](https://scikit-learn.org/stable/install.html). You can install scikit-learn with `pip install -U scikit-learn`.
 
 ## Installation
 
