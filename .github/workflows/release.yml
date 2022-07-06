@@ -1,6 +1,7 @@
 name: Build bootplot, test it and release it to PyPI & GitHub
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
