@@ -48,6 +48,9 @@ if __name__ == '__main__':
     )
 ```
 
+This will generate a static image and an animation, as shown below:
+![alt-text-1](demo_image.png "title-1") ![alt-text-2](demo_animation.gif "title-2")
+
 See the `examples` folder for more examples, including bar charts, point plots, polynomial regression models, pie charts and text plots.
 
 ## Installation
