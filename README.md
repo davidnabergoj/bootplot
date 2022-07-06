@@ -7,7 +7,21 @@ animation of your data uncertainty.
 The method works by resampling the original dataset using bootstrap and plotting each bootstrapped sample.
 The plots are then combined into a single image or an animation.
 
-# Example
+## Installation
+
+**Bootplot** requires Python version 3.8 or greater. You can install **Bootplot** using: 
+```
+pip install bootplot
+```
+
+Alternatively, you can install **Bootplot** locally:
+```
+git clone https://github.com/davidnabergoj/bootplot
+cd bootplot
+pip install .
+```
+
+## Example usage
 
 Suppose we have some data and their corresponding targets. We can model our targets with a regression
 line and visualize the uncertainty with the following code:
@@ -62,17 +76,3 @@ The animation on the right displays uncertainty by iterating over a sequence of 
 </table>
 
 See the `examples` folder for more examples, including bar charts, point plots, polynomial regression models, pie charts and text plots.
-
-## Installation
-
-**Bootplot** requires Python version 3.8 or greater. You can install **Bootplot** using: 
-```
-pip install bootplot
-```
-
-Alternatively, you can install **Bootplot** locally:
-```
-git clone https://github.com/davidnabergoj/bootplot
-cd bootplot
-pip install .
-```
