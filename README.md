@@ -49,7 +49,13 @@ if __name__ == '__main__':
 ```
 
 This will generate a static image and an animation, as shown below:
-![alt-text-1](demo_image.png "title-1") ![alt-text-2](demo_animation.gif "title-2")
+
+<table>
+    <tr>
+        <td><img src="demo_image.png"></td>
+        <td><img src="demo_animation.gif"></td>
+    </tr>
+</table>
 
 See the `examples` folder for more examples, including bar charts, point plots, polynomial regression models, pie charts and text plots.
 
