@@ -3,7 +3,7 @@ imageio~=2.9.0
 imageio-ffmpeg==0.4.7
 matplotlib>=3
 tqdm~=4.64.0
-pillow~=9.0.1
+pillow>=8
 scipy~=1.7.3
 scikit-image~=0.19.2
 networkx~=2.6.3
