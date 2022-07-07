@@ -44,10 +44,10 @@ def make_linear_regression(data_subset, data_full, ax):
     ax.plot(xs, lr.predict(xs.reshape(-1, 1)), c='r')
     
     # Show root mean squared error (RMSE) with a text box
-    mse = np.sqrt(np.mean(np.square(data_subset[:, 1] - lr.predict(data_subset[:, 0].reshape(-1, 1)))))
+    rmse = np.sqrt(np.mean(np.square(data_subset[:, 1] - lr.predict(data_subset[:, 0].reshape(-1, 1)))))
     ax.text(
         0, -8,
-        f'RMSE: {mse:.4f}',
+        f'RMSE: {rmse:.4f}',
         fontsize=12,
         ha='center',
         bbox=dict(facecolor='none', edgecolor='black', pad=10.0)
