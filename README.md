@@ -14,7 +14,7 @@ The plots are then combined into a single image or an animation.
 pip install bootplot
 ```
 
-Alternatively, you can install **Bootplot** locally:
+Alternatively, you can install **Bootplot** without PyPI:
 ```
 git clone https://github.com/davidnabergoj/bootplot
 cd bootplot
