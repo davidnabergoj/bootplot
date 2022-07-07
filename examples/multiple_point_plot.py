@@ -4,7 +4,7 @@ from bootplot import bootplot
 
 def make_point_plot(data_subset, data_full, ax):
     # Get info from the full dataset
-    n_classes = len(np.unique(data_full[:, 0]))
+    n_classes = int(np.max(data_full[:, 0]) + 1)
 
     # Plot subset
     for i in range(n_classes):

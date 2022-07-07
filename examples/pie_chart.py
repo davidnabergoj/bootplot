@@ -4,7 +4,7 @@ from bootplot import bootplot
 
 def make_pie_chart(data_subset, data_full, ax):
     # Get info from the full dataset
-    n_classes = len(np.unique(data_full))
+    n_classes = np.max(data_full) + 1
 
     # Plot subset
     ticks, counts = np.unique(data_subset, return_counts=True)
