@@ -75,7 +75,10 @@ if __name__ == '__main__':
 ```
 
 This will generate a static image and an animation, as shown below. 
-The static image on points shows the full scattered dataset in blue and regression lines that correspond to each bootstrapped sample of the dataset in red. The spread of regression lines represents uncertainty according to the bootstrap process.
+The static image on points shows the full scattered dataset in blue and regression lines that correspond to each bootstrapped sample of the dataset in red.
+The spread of regression lines represents uncertainty according to the bootstrap process.
+We can also see the uncertainty in root mean squared error (RMSE).
+We see that only the first digit of RMSE is significant, since the decimal part is blurred.
 The animation on the right displays uncertainty by iterating over a sequence of plots containing regression lines.
 
 <table>
