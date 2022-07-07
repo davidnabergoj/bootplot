@@ -60,17 +60,18 @@ def plot_to_array(plot_function: callable,
     return data
 
 
-def merge_images(images: np.ndarray) -> np.ndarray:
+def merge_images(images: np.ndarray, power: float = 1.0) -> np.ndarray:
     """
     Merge images into a static image (averaged image).
     The shape of images is (batch_size, width, height, channels).
     This operation overwrites input images.
 
-    :param images: images corresponding to different bootstrap resamples.
+    :param images: images corresponding to different bootstrap samples.
+    :param power: raise the merged image pixels to the specified power to increase contrast.
     :return: merged image.
     """
     images = images.astype(np.float32) / 255  # Cast to float
-    merged = np.mean(images, axis=0)
+    merged = np.mean(images, axis=0) ** power
     merged = (merged * 255).astype(np.uint8)
     return merged
 
@@ -104,6 +105,7 @@ def bootplot(f: callable,
              output_size_px: Tuple[int, int] = (512, 512),
              output_image_path: Union[str, Path] = None,
              output_animation_path: Union[str, Path] = None,
+             contrast_modifier: float = 1.0,
              sort_type: str = 'tsp',
              sort_kwargs: dict = None,
              decay: int = 0,
@@ -120,6 +122,8 @@ def bootplot(f: callable,
     :param output_size_px: output size (height, width) in pixels.
     :param output_image_path: path where the image should be stored. If None, the image is not stored.
     :param output_animation_path: path where the animation should be stored. If None, the animation is not created.
+    :param contrast_modifier: modify the contrast in the static image (default = 1). Setting this to 1 keeps the same
+        contrast, setting this to less than 1 reduces contrast, setting this to greater than 1 increases contrast.
     :param sort_type: method to sort images when constructing the animation. Should be one of the following:
         "tsp" (traveling salesman method on the image similarity graph), "pca" (image projection onto the real line
         using PCA), "hm" (order using center mass in the horizontal direction), "none" (no sorting; random order).
@@ -137,7 +141,7 @@ def bootplot(f: callable,
         plot_to_array(f, data, np.random.randint(low=0, high=len(data), size=len(data)), fig, ax, xlim=xlim, ylim=ylim)
         for _ in tqdm(range(m), desc='Generating plots', disable=not verbose)
     ])
-    merged_image = merge_images(image_samples)[..., :3]  # Do not use the alpha channel
+    merged_image = merge_images(image_samples, power=contrast_modifier)[..., :3]  # Do not use the alpha channel
     plt.close(fig)
 
     if output_image_path is not None:
