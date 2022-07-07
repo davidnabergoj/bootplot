@@ -42,6 +42,16 @@ def make_linear_regression(data_subset, data_full, ax):
     lr.fit(data_subset[:, 0].reshape(-1, 1), data_subset[:, 1])
     xs = np.linspace(-10, 10, 1000)
     ax.plot(xs, lr.predict(xs.reshape(-1, 1)), c='r')
+    
+    # Show root mean squared error (RMSE) with a text box
+    mse = np.sqrt(np.mean(np.square(data_subset[:, 1] - lr.predict(data_subset[:, 0].reshape(-1, 1)))))
+    ax.text(
+        0, -8,
+        f'RMSE: {mse:.4f}',
+        fontsize=12,
+        ha='center',
+        bbox=dict(facecolor='none', edgecolor='black', pad=10.0)
+    )
 
 
 if __name__ == '__main__':
@@ -56,8 +66,8 @@ if __name__ == '__main__':
     bootplot(
         make_linear_regression,
         dataset,
-        output_image_path='bootstrapped_linear_regression.png',
-        output_animation_path='bootstrapped_linear_regression.gif',
+        output_image_path='demo_image.png',
+        output_animation_path='demo_animation.gif',
         xlim=(-10, 10),
         ylim=(-10, 10),
         verbose=True
