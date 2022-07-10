@@ -9,7 +9,7 @@ The plots are then combined into a single image or an animation.
 
 ## Installation
 
-**Bootplot** requires Python version 3.8 or greater. You can install **Bootplot** using: 
+**Bootplot** requires Python version 3.8 or greater. You can install it using: 
 ```
 pip install bootplot
 ```
