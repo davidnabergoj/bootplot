@@ -1,3 +1,4 @@
+import warnings
 from pathlib import Path
 from typing import Union, Tuple
 
@@ -133,7 +134,8 @@ def bootplot(f: callable,
              fps: int = 60,
              xlim: Tuple[float, float] = (None, None),
              ylim: Tuple[float, float] = (None, None),
-             verbose: bool = False) -> np.ndarray:
+             verbose: bool = False,
+             warn_limits: bool = True) -> np.ndarray:
     """
     Create a bootstrapped plot or animation.
 
@@ -184,16 +186,19 @@ def bootplot(f: callable,
     :param fps: desired output framerate for the animation. Default: ``60``.
     :type fps: int
 
-    :param xlim: x axis limits representing the minimum and maximum. If a limit is ``None``, the plot is unbounded in
-        that direction. Default: ``(None, None)``.
+    :param xlim: x axis limits representing the minimum and maximum. If a limit is ``None``, the plot is unbounded
+        horizontally and the user is warned. Default: ``(None, None)``.
     :type xlim: tuple[float, float]
 
-    :param ylim: y axis limits representing the minimum and maximum. If a limit is ``None``, the plot is unbounded in
-        that direction. Default: ``(None, None)``.
+    :param ylim: y axis limits representing the minimum and maximum. If a limit is ``None``, the plot is unbounded
+        vertically and the user is warned. Default: ``(None, None)``.
     :type ylim: tuple[float, float]
 
     :param verbose: if True, print progress messages. Default: ``False``.
     :type verbose: bool
+
+    :param warn_limits: if True, warns the user when a limit is not specified. Default: ``True``.
+    :type warn_limits: bool
 
     :return: bootstrapped plot.
     :rtype: numpy.ndarray
@@ -233,6 +238,15 @@ def bootplot(f: callable,
         >>> image.shape
         (512, 512, 3)
     """
+    if None in xlim and warn_limits:
+        warnings.warn("One or both x limits are None. "
+                      "This may cause the results to be blurry. "
+                      "We recommend setting both x limits.")
+    if None in ylim and warn_limits:
+        warnings.warn("One or both y limits are None. "
+                      "This may cause the results to be blurry. "
+                      "We recommend setting both y limits.")
+
     px_size_inches = 1 / plt.rcParams['figure.dpi']
     fig, ax = plt.subplots(figsize=(output_size_px[0] * px_size_inches, output_size_px[1] * px_size_inches))
     image_samples = np.stack([
