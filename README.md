@@ -1,4 +1,4 @@
-![logo](logo.png)
+![logo](https://raw.githubusercontent.com/davidnabergoj/bootplot/master/logo.png)
 
 **bootplot** is a package that lets you easily visualize uncertainty. 
 By providing a dataset and a plotting function, **bootplot** automatically generates a static image and an animation of your uncertainty.
@@ -85,8 +85,8 @@ The animation on the right displays uncertainty by iterating over a sequence of 
 
 <table>
     <tr>
-        <td><img src="demo_image.png"></td>
-        <td><img src="demo_animation.gif"></td>
+        <td><img src="https://raw.githubusercontent.com/davidnabergoj/bootplot/master/demo_image.png"></td>
+        <td><img src="https://raw.githubusercontent.com/davidnabergoj/bootplot/master/demo_animation.gif"></td>
     </tr>
 </table>
 
