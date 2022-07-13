@@ -98,4 +98,4 @@ and text plots.
 
 ## Documentation
 
-Read the docs at https://bootplot.readthedocs.io/en/latest/
+Read the documentation and check out tutorials at https://bootplot.readthedocs.io/en/latest/
