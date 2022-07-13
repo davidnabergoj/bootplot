@@ -3,8 +3,12 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to bootplot's documentation!
-====================================
+
+.. title:: bootplot documentation
+
+.. figure:: ./../../logo.png
+   :scale: 65%
+   :align: center
 
 **bootplot** is a python library for visualizing uncertainty.
 Check out the :doc:`quickstart` section to get started.
