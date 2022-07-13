@@ -114,56 +114,103 @@ def bootplot(f: callable,
              ylim: Tuple[float, float] = (None, None),
              verbose: bool = False) -> np.ndarray:
     """
-    Create a bootstrapped plot.
+    Create a bootstrapped plot or animation.
+
+    This function internally creates ``m`` samples with replacement from the provided ``data``. Each sample has the same
+    number of rows as the input. The samples are then plotted using the function handle ``f`` and the images stored as
+    `numpy.ndarray` objects. The output is a weighted sum of these images. If specified, this function can also create
+    an animation where images are sorted according to ``sort_type`` and the output animation is written to disk.
 
     :param f: function handle to perform the plotting. The handle should have the form ``f(data_subset, data_full, ax)``
-        where ``data_subset``, ``data_full`` are ``numpy.ndarray`` objects and ``ax`` is a
-        ``matplotlib.axes.Axes object``.
+        where ``data_subset``, ``data_full`` are `numpy.ndarray` objects and ``ax`` is a
+        `matplotlib.axes.Axes` object.
     :type f: callable
 
     :param data: data to be used in plotting.
     :type data: numpy.ndarray
 
-    :param m: number of boostrap resamples.
+    :param m: number of boostrap resamples. Default: ``100``.
     :type m: int
 
-    :param output_size_px: output size (height, width) in pixels.
+    :param output_size_px: output size (height, width) in pixels. Default: ``(512, 512)``.
     :type output_size_px: tuple[int, int]
 
     :param output_image_path: path where the image should be stored. If None, the image is not stored.
+        Default: ``None``.
     :type output_image_path: str or pathlib.Path
 
     :param output_animation_path: path where the animation should be stored. If None, the animation is not created.
+        Default: ``None``.
     :type output_animation_path: str or pathlib.Path
 
-    :param contrast_modifier: modify the contrast in the static image (default = 1). Setting this to 1 keeps the same
-        contrast, setting this to less than 1 reduces contrast, setting this to greater than 1 increases contrast.
+    :param contrast_modifier: modify the contrast in the static image. Setting this to 1 keeps the same contrast,
+        setting this to less than 1 reduces contrast, setting this to greater than 1 increases contrast. Default: ``1``.
     :type contrast_modifier: float
 
     :param sort_type: method to sort images when constructing the animation. Should be one of the following:
         "tsp" (traveling salesman method on the image similarity graph), "pca" (image projection onto the real line
         using PCA), "hm" (order using center mass in the horizontal direction), "none" (no sorting; random order).
+        Default: ``"tsp"``.
     :type sort_type: str
 
-    :param sort_kwargs: keyword arguments for the sorting method. See bootplot.sorting.sort_images for details.
+    :param sort_kwargs: keyword arguments for the sorting method. If None, no keyword arguments are passed to the
+        sorting method. See ``bootplot.sorting.sort_images`` for details. Default: ``None``.
+    :type sort_kwargs: dict
 
-    :param decay: decay length when creating the animation. If 0, no decay is applied.
+    :param decay: decay length when creating the animation. If 0, no decay is applied. Default: ``0``.
     :type decay: int
 
-    :param fps: desired output framerate for the animation.
+    :param fps: desired output framerate for the animation. Default: ``60``.
     :type fps: int
 
-    :param xlim: x axis limits.
+    :param xlim: x axis limits representing the minimum and maximum. If a limit is ``None``, the plot is unbounded in
+        that direction. Default: ``(None, None)``.
     :type xlim: tuple[float, float]
 
-    :param ylim: y axis limits.
+    :param ylim: y axis limits representing the minimum and maximum. If a limit is ``None``, the plot is unbounded in
+        that direction. Default: ``(None, None)``.
     :type ylim: tuple[float, float]
 
-    :param verbose: if True, print progress messages.
+    :param verbose: if True, print progress messages. Default: ``False``.
     :type verbose: bool
 
     :return: bootstrapped plot.
     :rtype: numpy.ndarray
+
+    Examples:
+        Consider the task of estimating the uncertainty of a regression model.
+        In this example, we use linear regression model to fit data drawn from a bivariate normal distribution.
+        Instead of manually deriving and writing uncertainty estimation code, we only need to know how to plot our data.
+
+        We define a function that plots our data of interest and pass it to ``bootplot``. In this case, we show a
+        scatterplot of the entire dataset and a regression line based on the bootstrapped sample. We also provide axis
+        limits to constrain our region of interest. ``bootplot`` generates the static image and saves it to disk.
+        We can also continue to work with the returned image as a numpy.ndarray.
+
+        >>> import numpy as np
+        >>> from bootplot import bootplot
+        >>> from sklearn.linear_model import LinearRegression
+        >>> np.random.seed(0)
+        >>>
+        >>> def make_plot(data_subset, data_full, ax):
+        ...     ax.scatter(data_full[:, 0], data_full[:, 1])
+        ...     lr = LinearRegression()
+        ...     lr.fit(data_subset[:, 0].reshape(-1, 1), data_subset[:, 1])
+        ...     xs = np.linspace(-10, 10, 1000)
+        ...     ax.plot(xs, lr.predict(xs.reshape(-1, 1)), c='r')
+        >>>
+        >>> dataset = np.random.multivariate_normal(mean=[0, 0], cov=[[5, 1.5], [1.5, 1]], size=(25, ))
+        >>> dataset.shape
+        (25, 2)
+        >>> image = bootplot(
+        ...     make_plot,
+        ...     dataset,
+        ...     output_image_path='bootstrapped_linear_regression.png',
+        ...     xlim=(-10, 10),
+        ...     ylim=(-10, 10)
+        ... )
+        >>> image.shape
+        (512, 512, 3)
     """
     px_size_inches = 1 / plt.rcParams['figure.dpi']
     fig, ax = plt.subplots(figsize=(output_size_px[0] * px_size_inches, output_size_px[1] * px_size_inches))

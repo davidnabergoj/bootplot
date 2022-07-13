@@ -7,23 +7,26 @@ Welcome to bootplot's documentation!
 ====================================
 
 **bootplot** is a python library for visualizing uncertainty.
-Check out the :doc:`quickstart` section for further information, including how to :ref:`install <installation>` the package.
+Check out the :doc:`quickstart` section to get started.
 
 .. note::
    This project is under active development.
 
+.. _installation:
+
+Installation
+------------
+
+You can install **bootplot** using pip:
+
+.. code-block::
+
+    pip install bootplot
 
 Contents
 --------
 .. toctree::
+   :maxdepth: 1
 
    quickstart
-   api
-   modules
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   documentation

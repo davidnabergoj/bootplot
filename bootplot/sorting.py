@@ -38,18 +38,28 @@ class Sorter(abc.ABC):
 
 
 class DefaultSorter(Sorter):
+    """
+    Class that does not perform any sorting.
+    """
     def sort(self, images: np.ndarray, **kwargs) -> List[int]:
         """
         Does not sort images.
 
         :param images: input images.
+        :type images: numpy.ndarray with shape (n_images, n_rows, n_columns)
+
         :param kwargs: unused.
+
         :return: indices of images in the original order.
+        :rtype: list[int]
         """
         return list(range(len(images)))  # Does not sort
 
 
 class PCASorter(Sorter):
+    """
+    Class that sorts images according to their PCA projections.
+    """
     def sort(self, gray_images: np.ndarray, features: str = "center_mass", **kwargs) -> List[int]:
         """
         Sort images with a PCA-based method.
@@ -57,10 +67,16 @@ class PCASorter(Sorter):
         The order of the projection is the order of the images.
 
         :param gray_images: input images.
+        :type gray_images: numpy.ndarray with shape (n_images, n_rows, n_columns)
+
         :param features: type of features to be used for PCA. Must be one of "selected" (HOG, center mass, per component
-            center mass), "center_mass" (center mass), "full" (flattened images).
+            center mass), "center_mass" (center mass), "full" (flattened images). Default: ``"center_mass"``.
+        :type features: str
+
         :param kwargs: unused.
+
         :return: image indices in for the new ordering.
+        :rtype: list[int]
         """
         if features == "selected":
             hf = compute_hog_features(gray_images)
@@ -81,15 +97,24 @@ class PCASorter(Sorter):
 
 
 class TravelingSalesmanSorter(Sorter):
+    """
+    Class that sorts images according to a hamiltonian (traveling salesman) path in their similarity graph.
+    """
     def distance_matrix(self, gray_images: np.ndarray, features: str = "full") -> np.ndarray:
         """
         Compute distances for all pairs input images. The distances are based on image representations, given by
-        the features parameter.
+        the ``features`` parameter.
 
         :param gray_images: input images.
+        :type gray_images: numpy.ndarray with shape (n_images, n_rows, n_columns)
+
         :param features: type of features to be used for distance computation. Must be one of "selected" (HOG,
             center mass, per component center mass), "center_mass" (center mass), "full" (flattened images).
-        :return: square pairwise distance matrix.
+            Default: ``"full"``.
+        :type features: str
+
+        :return: square pairwise distance matrix with shape `(n_images, n_images)`.
+        :rtype: numpy.ndarray
         """
         m = len(gray_images)
         if features == 'full':
@@ -121,9 +146,15 @@ class TravelingSalesmanSorter(Sorter):
         of TSP is used and it is possible (likely) that an image may be encountered more than once.
 
         :param gray_images: input images.
-        :param features: types of features to use when computing pairwise distances.
+        :type gray_images: numpy.ndarray with shape (n_images, n_rows, n_columns)
+
+        :param features: types of features to use when computing pairwise distances. Default: ``"full"``.
+        :type features: str
+
         :param kwargs: unused.
+
         :return: image indices in the final ordering.
+        :rtype: list[int]
         """
         self.verbose_print("Computing distance matrix")
         distance_matrix = self.distance_matrix(gray_images, features=features)
@@ -134,6 +165,9 @@ class TravelingSalesmanSorter(Sorter):
 
 
 class HorizontalMassSorter(Sorter):
+    """
+    Class that sorts images according to the horizontal component of their center of mass.
+    """
     def sort(self, gray_images: np.ndarray, **kwargs) -> List[int]:
         """
         Sort images using a horizontal center mass algorithm.
@@ -141,8 +175,12 @@ class HorizontalMassSorter(Sorter):
         Images are sorted according to the horizontal (x) component of the center mass.
 
         :param gray_images: input images.
+        :type gray_images: numpy.ndarray with shape (n_images, n_rows, n_columns)
+
         :param kwargs: unused.
+
         :return: image indices in the final ordering.
+        :rtype: list[int]
         """
         centers_x = []
         for image in gray_images:
@@ -185,15 +223,26 @@ def sort_images(images: np.ndarray,
     """
     Sort images with a specified sorting method.
 
-    :param images: input images to sort.
+    :param images: images to be sorted.
+    :type images: np.ndarray with shape (n_images, n_rows, n_columns, n_channels)
+
     :param sort_type: method to sort images when constructing the animation. Should be one of the following:
         "tsp" (traveling salesman method on the image similarity graph), "pca" (image projection onto the real line
         using PCA), "hm" (order using center mass in the horizontal direction), "none" (no sorting; random order).
-    :param verbose: if True, print additional information during sorting.
+        Default: ``"tsp"``.
+    :type sort_type: str
+
+    :param verbose: if True, print additional information during sorting. Default: ``False``.
+    :type verbose: bool
+
     :param working_size: optional (height, width) tuple that determines working image size. Images are resized to this
-        size before being sorted.
+        size before being sorted. If None, images are not resized. Default: ``None``.
+    :type working_size: tuple[int, int]
+
     :param kwargs: keyword arguments for the sorting method.
+
     :return: image indices in the final ordering.
+    :rtype: list[int]
     """
     if sort_type == "tsp":
         sorter = TravelingSalesmanSorter(verbose=verbose)
