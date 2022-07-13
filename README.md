@@ -18,7 +18,7 @@ Alternatively, you can install **Bootplot** without PyPI:
 ```
 git clone https://github.com/davidnabergoj/bootplot
 cd bootplot
-pip install .
+python setup.py install
 ```
 
 ## Example usage
