@@ -1,24 +1,28 @@
 # Bootplot: bootstrap your plot
 
-**Bootplot** is a package that lets you easily visualize uncertainty. You only need to provide a function
+**bootplot** is a package that lets you easily visualize uncertainty. You only need to provide a function
 that generates a plot from your data and pass it to `bootplot`. This will generate a static image and an
 animation of your data uncertainty.
 
 The method works by resampling the original dataset using bootstrap and plotting each bootstrapped sample.
 The plots are then combined into a single image or an animation.
+**bootplot** is also especially useful when dealing with small datasets, since it
+relies on the bootstrap method which robustly estimates uncertainty using resampling.
 
 ## Installation
 
-**Bootplot** requires Python version 3.8 or greater. You can install it using: 
+**bootplot** requires Python version 3.8 or greater. You can install it using:
+
 ```
 pip install bootplot
 ```
 
-Alternatively, you can install **Bootplot** without PyPI:
+Alternatively, you can install **bootplot** without PyPI:
+
 ```
 git clone https://github.com/davidnabergoj/bootplot
 cd bootplot
-pip install .
+python setup.py install
 ```
 
 ## Example usage
@@ -74,8 +78,9 @@ if __name__ == '__main__':
     )
 ```
 
-This will generate a static image and an animation, as shown below. 
-The static image on points shows the full scattered dataset in blue and regression lines that correspond to each bootstrapped sample of the dataset in red.
+This will generate a static image and an animation, as shown below.
+The static image on points shows the full scattered dataset in blue and regression lines that correspond to each
+bootstrapped sample of the dataset in red.
 The spread of regression lines represents uncertainty according to the bootstrap process.
 We can also see the uncertainty in root mean squared error (RMSE).
 We see that only the first digit of RMSE is significant, since the decimal part is blurred.
@@ -88,4 +93,5 @@ The animation on the right displays uncertainty by iterating over a sequence of 
     </tr>
 </table>
 
-See the `examples` folder for more examples, including bar charts, point plots, polynomial regression models, pie charts and text plots.
+See the `examples` folder for more examples, including bar charts, point plots, polynomial regression models, pie charts
+and text plots.
