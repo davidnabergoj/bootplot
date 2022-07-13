@@ -8,9 +8,7 @@ Welcome to bootplot's documentation!
 
 **bootplot** is a python library for visualizing uncertainty.
 Check out the :doc:`quickstart` section to get started.
-
-.. note::
-   This project is under active development.
+Visit the `Github repository <https://github.com/davidnabergoj/bootplot>`_ to create pull requests, post issues or view the source code.
 
 .. _installation:
 
