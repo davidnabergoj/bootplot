@@ -88,7 +88,7 @@ The animation on the right displays uncertainty by iterating over a sequence of 
     </tr>
 </table>
 
-See the `examples` folder for more examples, including bar charts, point plots, polynomial regression models, pie charts, text plots and pandas dataframes.
+See the [examples](examples) folder for more examples, including bar charts, point plots, polynomial regression models, pie charts, text plots and pandas dataframes.
 
 ## Documentation
 
