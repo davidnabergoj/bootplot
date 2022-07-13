@@ -5,6 +5,7 @@ import numpy as np
 import imageio
 import io
 import matplotlib.pyplot as plt
+import pandas as pd
 from tqdm import tqdm
 from PIL import Image
 
@@ -32,7 +33,7 @@ def fig_to_array(fig: plt.Figure,
 
 
 def plot_to_array(plot_function: callable,
-                  data: np.ndarray,
+                  data: Union[np.ndarray, pd.DataFrame],
                   indices: np.ndarray,
                   fig: plt.Figure,
                   ax: plt.Axes,
@@ -42,18 +43,38 @@ def plot_to_array(plot_function: callable,
     """
     Plot data and obtain image.
 
-    :param plot_function: function to do the plotting. The function should receive the data subset, original data, Axes
-        object and optional keyword arguments.
+    :param plot_function: function handle to perform the plotting. The handle should have the form ``f(data_subset,
+        data_full, ax)`` where ``data_subset``, ``data_full`` are `numpy.ndarray` or `pandas.DataFrame` objects and
+        ``ax`` is a `matplotlib.axes.Axes` object.
+    :type plot_function: callable
+
     :param data: full data to be used in plotting.
+    :type data: numpy.ndarray or pandas.DataFrame
+
     :param indices: bootstrap resampled indices of the data.
-    :param fig: Figure object with a single Axes.
+    :type indices: numpy.ndarray
+
+    :param fig: figure object with a single Axes.
+    :type fig: matplotlib.figure.Figure
+
     :param ax: Axes object.
+    :type ax: matplotlib.axes.Axes
+
     :param xlim: x axis limits.
+    :type xlim: tuple[float, float]
+
     :param ylim: y axis limits.
+    :type ylim: tuple[float, float]
+
     :param kwargs: keyword arguments to plot_function.
+
     :return: image.
+    :rtype: numpy.ndarray
     """
-    plot_function(data[indices], data, ax, **kwargs)
+    if isinstance(data, pd.DataFrame):
+        plot_function(data.iloc[indices], data, ax, **kwargs)
+    else:
+        plot_function(data[indices], data, ax, **kwargs)
     ax.set_xlim(*xlim)
     ax.set_ylim(*ylim)
     data = fig_to_array(fig, ax)
@@ -100,7 +121,7 @@ def decay_images(images: np.ndarray,
 
 
 def bootplot(f: callable,
-             data: np.ndarray,
+             data: Union[np.ndarray, pd.DataFrame],
              m: int = 100,
              output_size_px: Tuple[int, int] = (512, 512),
              output_image_path: Union[str, Path] = None,
@@ -122,12 +143,12 @@ def bootplot(f: callable,
     an animation where images are sorted according to ``sort_type`` and the output animation is written to disk.
 
     :param f: function handle to perform the plotting. The handle should have the form ``f(data_subset, data_full, ax)``
-        where ``data_subset``, ``data_full`` are `numpy.ndarray` objects and ``ax`` is a
+        where ``data_subset``, ``data_full`` are `numpy.ndarray` or `pandas.DataFrame` objects and ``ax`` is a
         `matplotlib.axes.Axes` object.
     :type f: callable
 
     :param data: data to be used in plotting.
-    :type data: numpy.ndarray
+    :type data: numpy.ndarray or pandas.DataFrame
 
     :param m: number of boostrap resamples. Default: ``100``.
     :type m: int

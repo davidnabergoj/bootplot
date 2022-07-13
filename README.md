@@ -8,6 +8,8 @@ The plots are then combined into a single image or an animation.
 **bootplot** is also especially useful when dealing with small datasets, since it
 relies on the bootstrap method which robustly estimates uncertainty using resampling.
 
+**bootplot** supports datasets represented as numpy arrays or pandas dataframes.
+
 ## Installation
 
 **bootplot** requires Python version 3.8 or greater. You can install it using:
@@ -24,7 +26,7 @@ cd bootplot
 python setup.py install
 ```
 
-## Example usage
+## Example
 
 Suppose we have some data and their corresponding targets. We can model our targets with a regression
 line and visualize the uncertainty with the following code:
@@ -36,25 +38,19 @@ from sklearn.linear_model import LinearRegression
 from bootplot import bootplot
 
 
-def make_linear_regression(data_subset, data_full, ax):
+def plot_regression(data_subset, data_full, ax):
     # Plot full dataset
     ax.scatter(data_full[:, 0], data_full[:, 1])
 
     # Plot regression line trained on the subset
     lr = LinearRegression()
     lr.fit(data_subset[:, 0].reshape(-1, 1), data_subset[:, 1])
-    xs = np.linspace(-10, 10, 1000)
-    ax.plot(xs, lr.predict(xs.reshape(-1, 1)), c='r')
+    ax.plot([-10, 10], lr.predict([[-10], [10]]), c='r')
     
-    # Show root mean squared error (RMSE) with a text box
+    # Show root mean squared error in a text box
     rmse = np.sqrt(np.mean(np.square(data_subset[:, 1] - lr.predict(data_subset[:, 0].reshape(-1, 1)))))
-    ax.text(
-        0, -8,
-        f'RMSE: {rmse:.4f}',
-        fontsize=12,
-        ha='center',
-        bbox=dict(facecolor='none', edgecolor='black', pad=10.0)
-    )
+    bbox_kwargs = dict(facecolor='none', edgecolor='black', pad=10.0)
+    ax.text(x=0, y=-8, s=f'RMSE: {rmse:.4f}', fontsize=12, ha='center', bbox=bbox_kwargs)
 
 
 if __name__ == '__main__':
@@ -67,7 +63,7 @@ if __name__ == '__main__':
 
     # Create image and animation that show uncertainty
     bootplot(
-        make_linear_regression,
+        plot_regression,
         dataset,
         output_image_path='demo_image.png',
         output_animation_path='demo_animation.gif',
@@ -92,8 +88,7 @@ The animation on the right displays uncertainty by iterating over a sequence of 
     </tr>
 </table>
 
-See the `examples` folder for more examples, including bar charts, point plots, polynomial regression models, pie charts
-and text plots.
+See the [examples](examples) folder for more examples, including bar charts, point plots, polynomial regression models, pie charts, text plots and pandas dataframes.
 
 ## Documentation
 

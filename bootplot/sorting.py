@@ -224,7 +224,7 @@ def sort_images(images: np.ndarray,
     Sort images with a specified sorting method.
 
     :param images: images to be sorted.
-    :type images: np.ndarray with shape (n_images, n_rows, n_columns, n_channels)
+    :type images: numpy.ndarray with shape (n_images, n_rows, n_columns, n_channels)
 
     :param sort_type: method to sort images when constructing the animation. Should be one of the following:
         "tsp" (traveling salesman method on the image similarity graph), "pca" (image projection onto the real line
