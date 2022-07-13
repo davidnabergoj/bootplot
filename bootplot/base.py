@@ -116,24 +116,54 @@ def bootplot(f: callable,
     """
     Create a bootstrapped plot.
 
-    :param f: function to perform the plotting. The function should receive the data subset, original data, Axes object.
+    :param f: function handle to perform the plotting. The handle should have the form ``f(data_subset, data_full, ax)``
+        where ``data_subset``, ``data_full`` are ``numpy.ndarray`` objects and ``ax`` is a
+        ``matplotlib.axes.Axes object``.
+    :type f: callable
+
     :param data: data to be used in plotting.
+    :type data: numpy.ndarray
+
     :param m: number of boostrap resamples.
+    :type m: int
+
     :param output_size_px: output size (height, width) in pixels.
+    :type output_size_px: tuple[int, int]
+
     :param output_image_path: path where the image should be stored. If None, the image is not stored.
+    :type output_image_path: str or pathlib.Path
+
     :param output_animation_path: path where the animation should be stored. If None, the animation is not created.
+    :type output_animation_path: str or pathlib.Path
+
     :param contrast_modifier: modify the contrast in the static image (default = 1). Setting this to 1 keeps the same
         contrast, setting this to less than 1 reduces contrast, setting this to greater than 1 increases contrast.
+    :type contrast_modifier: float
+
     :param sort_type: method to sort images when constructing the animation. Should be one of the following:
         "tsp" (traveling salesman method on the image similarity graph), "pca" (image projection onto the real line
         using PCA), "hm" (order using center mass in the horizontal direction), "none" (no sorting; random order).
+    :type sort_type: str
+
     :param sort_kwargs: keyword arguments for the sorting method. See bootplot.sorting.sort_images for details.
+
     :param decay: decay length when creating the animation. If 0, no decay is applied.
+    :type decay: int
+
     :param fps: desired output framerate for the animation.
+    :type fps: int
+
     :param xlim: x axis limits.
+    :type xlim: tuple[float, float]
+
     :param ylim: y axis limits.
+    :type ylim: tuple[float, float]
+
     :param verbose: if True, print progress messages.
-    :return: bootstrapped plot as a numpy array.
+    :type verbose: bool
+
+    :return: bootstrapped plot.
+    :rtype: numpy.ndarray
     """
     px_size_inches = 1 / plt.rcParams['figure.dpi']
     fig, ax = plt.subplots(figsize=(output_size_px[0] * px_size_inches, output_size_px[1] * px_size_inches))
