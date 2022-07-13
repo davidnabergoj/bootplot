@@ -158,12 +158,12 @@ def bootplot(f: callable,
     :param output_size_px: output size (height, width) in pixels. Default: ``(512, 512)``.
     :type output_size_px: tuple[int, int]
 
-    :param output_image_path: path where the image should be stored. If None, the image is not stored.
-        Default: ``None``.
+    :param output_image_path: path where the image should be stored. The image format is inferred from the filename
+        extension. If None, the image is not stored. Default: ``None``.
     :type output_image_path: str or pathlib.Path
 
-    :param output_animation_path: path where the animation should be stored. If None, the animation is not created.
-        Default: ``None``.
+    :param output_animation_path: path where the animation should be stored. The animation format is inferred from the
+        filename extension. If None, the animation is not created. Default: ``None``.
     :type output_animation_path: str or pathlib.Path
 
     :param contrast_modifier: modify the contrast in the static image. Setting this to 1 keeps the same contrast,
