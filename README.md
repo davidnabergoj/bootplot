@@ -1,5 +1,10 @@
 ![logo](https://raw.githubusercontent.com/davidnabergoj/bootplot/master/logo.png)
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/davidnabergoj/bootplot/blob/main/LICENSE)
+[![Documentation Status](https://readthedocs.org/projects/bootplot/badge/?version=latest)](https://bootplot.readthedocs.io/en/latest/?badge=latest)
+[![build](https://github.com/davidnabergoj/bootplot/actions/workflows/build.yml/badge.svg)](https://github.com/davidnabergoj/bootplot/actions/workflows/build.yml)
+[![tests](https://github.com/davidnabergoj/bootplot/actions/workflows/tests.yml/badge.svg)](https://github.com/davidnabergoj/bootplot/actions/workflows/tests.yml)
+
 **bootplot** is a package for black-box uncertainty visualization. 
 By providing a dataset and a plotting function, **bootplot** automatically generates a static image and an animation of your uncertainty.
 
