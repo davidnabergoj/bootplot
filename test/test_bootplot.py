@@ -84,3 +84,33 @@ def test_merge():
     assert np.min(merged) >= 0
     assert np.max(merged) <= 255
     assert merged.dtype == np.uint8
+
+
+def test_pandas():
+    import pandas as pd
+    from sklearn.linear_model import LinearRegression
+
+    np.random.seed(0)
+    x = np.random.randn(20) * 5
+    noise = np.random.randn(20) * 5
+    y = 2 * x + 3 + noise
+
+    df = pd.DataFrame({'x': x, 'y': y})
+
+    def plot_regression(data_subset, data_full, ax):
+        ax.scatter(data_full['x'], data_full['y'])
+        lr = LinearRegression()
+        lr.fit(data_subset[['x']].values, data_subset['y'])
+        ax.plot([-10, 10], lr.predict([[-10], [10]]), c='r')
+
+    directory = make_directory()
+    image_path = directory / 'pandas_test.png'
+    bootplot(
+        plot_regression,
+        df,
+        output_image_path=image_path,
+        xlim=(-10, 10),
+        ylim=(-30, 30)
+    )
+    assert image_path.exists()
+    shutil.rmtree(directory)
