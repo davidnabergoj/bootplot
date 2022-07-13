@@ -8,7 +8,9 @@ The plots are then combined into a single image or an animation.
 **bootplot** is also especially useful when dealing with small datasets, since it
 relies on the bootstrap method which robustly estimates uncertainty using resampling.
 
-**bootplot** supports datasets represented as numpy arrays or pandas dataframes.
+**bootplot** supports datasets represented as numpy arrays or pandas dataframes. 
+Supported image output formats include popular formats such as JPG, PNG, BMP. Supported animation formats include popular formats such as GIF and MP4.
+For a complete list of formats, see the [Pillow documentation](https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html) and the [FFMPEG documentation](https://ffmpeg.org/ffmpeg-formats.html).
 
 ## Installation
 

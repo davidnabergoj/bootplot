@@ -79,19 +79,17 @@ We simply move the plotting code into a function and pass this function to ``boo
     def plot_regression(data_subset, data_full, ax):
         lr = LinearRegression()
         lr.fit(data_subset[:, 0].reshape(-1, 1), data_subset[:, 1])
-
         test_x = np.linspace(-2, 3).reshape(-1, 1)
         ax.scatter(data_full[:, 0], data_full[:, 1])
-
         ax.plot(test_x, lr.predict(test_x), c='r')
-        ax.set_xlim(-2, 3)
-        ax.set_ylim(-20, 40)
 
     bootplot(
         plot_regression,
         data=np.column_stack([x, y]),
         output_image_path='quickstart_regression.png',
-        output_animation_path='quickstart_regression.gif'
+        output_animation_path='quickstart_regression.gif',
+        xlim=(-2, 3),
+        ylim=(-20, 40)
     )
 
 The result is an image and an animation that both display regression line uncertainty:
@@ -100,3 +98,10 @@ The result is an image and an animation that both display regression line uncert
     :width: 49%
 .. image:: ../images/quickstart_regression.gif
     :width: 49%
+
+.. note::
+    It is often essential to manually specify axis limits.
+    This is to ensure all bootstrapped plots cover the same area and hence use the same axis ticks.
+    If axis limits are not provided, some image elements such as ticks may appear blurry depending on the plotting function.
+    Axis limits may be specified in the plotting function or passed to ``bootplot`` (bootplot).
+    The user will be warned and encouraged to provide limits if none are passed to ``bootplot``.
