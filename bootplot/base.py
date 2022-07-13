@@ -5,6 +5,7 @@ import numpy as np
 import imageio
 import io
 import matplotlib.pyplot as plt
+import pandas as pd
 from tqdm import tqdm
 from PIL import Image
 
@@ -53,7 +54,10 @@ def plot_to_array(plot_function: callable,
     :param kwargs: keyword arguments to plot_function.
     :return: image.
     """
-    plot_function(data[indices], data, ax, **kwargs)
+    if isinstance(data, pd.DataFrame):
+        plot_function(data.iloc[indices], data, ax, **kwargs)
+    else:
+        plot_function(data[indices], data, ax, **kwargs)
     ax.set_xlim(*xlim)
     ax.set_ylim(*ylim)
     data = fig_to_array(fig, ax)
@@ -100,7 +104,7 @@ def decay_images(images: np.ndarray,
 
 
 def bootplot(f: callable,
-             data: np.ndarray,
+             data: Union[np.ndarray, pd.DataFrame],
              m: int = 100,
              output_size_px: Tuple[int, int] = (512, 512),
              output_image_path: Union[str, Path] = None,
