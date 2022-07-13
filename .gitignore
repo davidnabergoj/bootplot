@@ -4,5 +4,7 @@
 *.mp4
 !demo_animation.gif
 !demo_image.png
+!logo.png
+!logo.svg
 !docs/images/*
 docs/build

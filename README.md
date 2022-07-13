@@ -1,4 +1,4 @@
-# Bootplot: bootstrap your plot
+![logo](logo.png)
 
 **bootplot** is a package that lets you easily visualize uncertainty. You only need to provide a function
 that generates a plot from your data and pass it to `bootplot`. This will generate a static image and an
