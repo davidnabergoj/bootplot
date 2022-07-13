@@ -10,7 +10,9 @@
    :scale: 65%
    :align: center
 
-**bootplot** is a python library for visualizing uncertainty.
+**bootplot** is a package that lets you easily visualize uncertainty.
+By providing a dataset and a plotting function, **bootplot** automatically generates a static image and an animation of your uncertainty.
+
 Check out the :doc:`quickstart` section to get started.
 Visit the `Github repository <https://github.com/davidnabergoj/bootplot>`_ to create pull requests, post issues or view the source code.
 
