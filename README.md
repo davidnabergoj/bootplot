@@ -1,7 +1,7 @@
 ![logo](logo.png)
 
 **bootplot** is a package that lets you easily visualize uncertainty. 
-By providing a dataset and a plotting function handle, **bootplot** automatically generates a static image and an animation of your uncertainty.
+By providing a dataset and a plotting function, **bootplot** automatically generates a static image and an animation of your uncertainty.
 
 The method works by resampling the original dataset using bootstrap and plotting each bootstrapped sample.
 The plots are then combined into a single image or an animation.
