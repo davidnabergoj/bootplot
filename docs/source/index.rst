@@ -10,7 +10,7 @@
    :scale: 65%
    :align: center
 
-**bootplot** is a package that lets you easily visualize uncertainty.
+**bootplot** is a package for black-box uncertainty visualization.
 By providing a dataset and a plotting function, **bootplot** automatically generates a static image and an animation of your uncertainty.
 
 Check out the :doc:`quickstart` section to get started.
