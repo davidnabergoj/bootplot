@@ -95,3 +95,7 @@ The animation on the right displays uncertainty by iterating over a sequence of 
 
 See the `examples` folder for more examples, including bar charts, point plots, polynomial regression models, pie charts
 and text plots.
+
+## Documentation
+
+Read the docs at https://bootplot.readthedocs.io/en/latest/
