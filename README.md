@@ -25,7 +25,7 @@ For a complete list of formats, see the [Pillow documentation](https://pillow.re
 pip install bootplot
 ```
 
-Alternatively, you can install **bootplot** without PyPI:
+Alternatively, you can install **bootplot** using:
 
 ```
 git clone https://github.com/davidnabergoj/bootplot
