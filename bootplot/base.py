@@ -1,3 +1,4 @@
+import math
 import warnings
 from pathlib import Path
 from typing import Union, Tuple
@@ -131,7 +132,7 @@ def bootplot(f: callable,
              sort_type: str = 'tsp',
              sort_kwargs: dict = None,
              decay: int = 0,
-             fps: int = 60,
+             animation_duration: float = 5.0,
              xlim: Tuple[float, float] = (None, None),
              ylim: Tuple[float, float] = (None, None),
              verbose: bool = False,
@@ -183,8 +184,8 @@ def bootplot(f: callable,
     :param decay: decay length when creating the animation. If 0, no decay is applied. Default: ``0``.
     :type decay: int
 
-    :param fps: desired output framerate for the animation. Default: ``60``.
-    :type fps: int
+    :param animation_duration: desired output animation duration in seconds. Default: ``5.0``.
+    :type animation_duration: float
 
     :param xlim: x axis limits representing the minimum and maximum. If a limit is ``None``, the plot is unbounded
         horizontally and the user is warned. Default: ``(None, None)``.
@@ -271,7 +272,8 @@ def bootplot(f: callable,
         if decay > 0:
             image_samples = decay_images(image_samples, m=m, decay_length=decay)
 
-        imageio.mimwrite(output_animation_path, image_samples, fps=fps)
+        animation_speed = max(int(len(image_samples) / animation_duration), 1)
+        imageio.mimwrite(output_animation_path, image_samples, fps=animation_speed)
         if verbose:
             print(f'> Saving bootstrapped animation to {output_animation_path}')
 
