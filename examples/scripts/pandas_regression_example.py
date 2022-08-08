@@ -22,5 +22,6 @@ bootplot(
     df,
     output_image_path='pandas_example.png',
     xlim=(-10, 10),
-    ylim=(-30, 30)
+    ylim=(-30, 30),
+    verbose=True
 )
