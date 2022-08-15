@@ -28,8 +28,12 @@ def make_regression(data_subset, data_full, ax):
         f'RMSE (LR): {lr_rmse:.4f}\nRMSE (SVR): {svr_rmse:.4f}',
         ha='left',
         va='top',
-        bbox=dict(facecolor='none', edgecolor='black', pad=6)
+        bbox=dict(facecolor='none', edgecolor='black', pad=6),
+        family='monospace'
     )
+
+    ax.set_xlim(-4, 4)
+    ax.set_ylim(-4, 3)
 
 
 if __name__ == '__main__':
@@ -48,7 +52,5 @@ if __name__ == '__main__':
         contrast_modifier=3.0,
         output_image_path='bootstrapped_regression_multiple_models.png',
         output_animation_path='bootstrapped_regression_multiple_models.gif',
-        xlim=(-4, 4),
-        ylim=(-4, 3),
         verbose=True
     )

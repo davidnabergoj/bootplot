@@ -6,6 +6,8 @@ def make_plot_demo_point_plot(data_subset, data_full, ax):
     # Plot subset
     ax.scatter(np.mean(data_subset), 0, s=100)
 
+    ax.set_xlim(-3, 3)
+
 
 if __name__ == '__main__':
     np.random.seed(0)
@@ -20,6 +22,5 @@ if __name__ == '__main__':
         output_image_path='bootstrapped_single_point_plot.png',
         output_animation_path='bootstrapped_single_point_plot.gif',
         sort_type="pca",
-        xlim=(-3, 3),
         verbose=True
     )

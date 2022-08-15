@@ -18,8 +18,12 @@ def make_pie_chart(data_subset, data_full, ax):
         loc='upper right',
         bbox_to_anchor=(1.1, 1.1, 0, 0),
         shadow=True,
-        title='Class'
+        title='Class',
+        prop={'family': 'monospace'}
     )
+
+    ax.set_xlim(-4, 4)
+    ax.set_ylim(-4, 4)
 
 
 if __name__ == '__main__':
@@ -33,7 +37,5 @@ if __name__ == '__main__':
         m=100,
         output_image_path='bootstrapped_pie_chart.png',
         output_animation_path='bootstrapped_pie_chart.gif',
-        xlim=(-4, 4),
-        ylim=(-4, 4),
         verbose=True
     )
