@@ -28,9 +28,9 @@ class Backend(ABC):
     def plot(self):
         indices = np.random.randint(low=0, high=len(self.data), size=len(self.data))
         if isinstance(self.data, pd.DataFrame):
-            self.f(self.data.iloc[indices], self.data, *self.plot_args)
+            return self.f(self.data.iloc[indices], self.data, *self.plot_args)
         elif isinstance(self.data, np.ndarray):
-            self.f(self.data[indices], self.data, *self.plot_args)
+            return self.f(self.data[indices], self.data, *self.plot_args)
 
     @abstractmethod
     def plot_to_array(self) -> np.ndarray:
@@ -48,6 +48,31 @@ class Backend(ABC):
     @abstractmethod
     def plot_args(self):
         raise NotImplemented
+
+
+class Basic(Backend):
+    def __init__(self, f: callable, data: Union[np.ndarray, pd.DataFrame], m: int, output_size_px: Tuple[int, int]):
+        super().__init__(f, data, m, output_size_px)
+        self.cached_image = None
+
+    def plot(self):
+        self.cached_image = super().plot()
+
+    def create_figure(self):
+        pass
+
+    def plot_to_array(self) -> np.ndarray:
+        return self.cached_image
+
+    def clear_figure(self):
+        pass
+
+    def close_figure(self):
+        pass
+
+    @property
+    def plot_args(self):
+        return []
 
 
 class Matplotlib(Backend):
@@ -130,5 +155,7 @@ class Plotly(Backend):
 def create_backend(backend_string, f, data, m, **kwargs):
     if backend_string == 'matplotlib':
         return Matplotlib(f=f, data=data, m=m, **kwargs)
+    elif backend_string == 'basic':
+        return Basic(f=f, data=data, m=m, **kwargs)
     else:
         raise NotImplemented
