@@ -25,9 +25,10 @@ def make_linear_regression(data_subset, data_full):
     plt.xlim(-10, 10)
     plt.ylim(-10, 10)
 
-    # We have some pre-made functions to handle converting plots to arrays and closing the plots.
+    # We have some pre-made functions to handle converting plots to arrays and closing the figure.
     # If you are using a custom plotting library, you need to handle this step yourself. A straightforward way is to
     #  implement a custom backend using the bootplot.backend.base.Backend abstract class.
+    # Closing the figure may not be necessary.
     image = plot_to_array(fig)
     close_figure(fig)
 
