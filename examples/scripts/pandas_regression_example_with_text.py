@@ -17,8 +17,10 @@ def plot_regression(data_subset, data_full, ax):
     # Show root mean squared error in a text box
     rmse = np.sqrt(np.mean((data_subset['y'] - lr.predict(data_subset[['x']].values)) ** 2))
     bbox_kwargs = dict(facecolor='none', edgecolor='black', pad=10.0)
-    ax.text(x=0, y=-8, s=f'RMSE: {rmse:.4f}', fontsize=12, ha='center', bbox=bbox_kwargs)
+    ax.text(x=0, y=-8, s=f'RMSE: {rmse:.4f}', fontsize=12, ha='center', bbox=bbox_kwargs, family='monospace')
 
+    ax.set_xlim(-10, 10)
+    ax.set_ylim(-10, 10)
 
 if __name__ == '__main__':
     np.random.seed(0)
@@ -33,7 +35,5 @@ if __name__ == '__main__':
         df,
         output_image_path='demo_image.png',
         output_animation_path='demo_animation.gif',
-        xlim=(-10, 10),
-        ylim=(-10, 10),
         verbose=True
     )

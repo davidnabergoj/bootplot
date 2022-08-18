@@ -16,10 +16,13 @@ def make_plot_demo_text(data_subset, data_full, ax):
         f'Target mean: {float(np.mean(data_subset[:, 1])):.4f}',
         fontsize=12,
         ha='center',
-        bbox=dict(facecolor='none', edgecolor='black', pad=10.0)
+        bbox=dict(facecolor='none', edgecolor='black', pad=10.0),
+        family='monospace'
     )
     ax.plot(xs, lr.predict(xs.reshape(-1, 1)), c='r')
 
+    ax.set_xlim(-10, 10)
+    ax.set_ylim(-10, 10)
 
 if __name__ == '__main__':
     np.random.seed(0)
@@ -34,7 +37,5 @@ if __name__ == '__main__':
         m=100,
         output_image_path='bootstrapped_text.png',
         output_animation_path='bootstrapped_text.gif',
-        xlim=(-10, 10),
-        ylim=(-10, 10),
         verbose=True
     )

@@ -12,6 +12,8 @@ def make_bar_chart(data_subset, data_full, ax):
     bar_counts_adjusted[bar_ticks] = bar_counts
     ax.bar(bar_ticks_adjusted, bar_counts_adjusted)
 
+    ax.set_ylim(0, 300)
+
 
 if __name__ == '__main__':
     np.random.seed(0)
@@ -23,6 +25,5 @@ if __name__ == '__main__':
         m=100,
         output_image_path='bootstrapped_bar_chart.png',
         output_animation_path='bootstrapped_bar_chart.mp4',
-        verbose=True,
-        ylim=(0, 300)
+        verbose=True
     )

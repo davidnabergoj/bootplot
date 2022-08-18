@@ -102,6 +102,8 @@ def test_pandas():
         lr = LinearRegression()
         lr.fit(data_subset[['x']].values, data_subset['y'])
         ax.plot([-10, 10], lr.predict([[-10], [10]]), c='r')
+        ax.set_xlim(-10, 10)
+        ax.set_ylim(-30, 30)
 
     directory = make_directory()
     image_path = directory / 'pandas_test.png'
@@ -109,8 +111,6 @@ def test_pandas():
         plot_regression,
         df,
         output_image_path=image_path,
-        xlim=(-10, 10),
-        ylim=(-30, 30)
     )
     assert image_path.exists()
     shutil.rmtree(directory)

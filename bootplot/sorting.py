@@ -156,9 +156,9 @@ class TravelingSalesmanSorter(Sorter):
         :return: image indices in the final ordering.
         :rtype: list[int]
         """
-        self.verbose_print("Computing distance matrix")
+        self.verbose_print("> Computing distance matrix")
         distance_matrix = self.distance_matrix(gray_images, features=features)
-        self.verbose_print('Solving TSP')
+        self.verbose_print('> Solving TSP')
         image_graph = nx.from_numpy_array(distance_matrix)
         order = nx.algorithms.approximation.traveling_salesman_problem(image_graph, cycle=False)
         return order
