@@ -19,7 +19,6 @@ class Backend(ABC):
         self.f = f
         self.data = data
         self.m = m
-        self.create_figure()
 
     @abstractmethod
     def create_figure(self):
@@ -81,7 +80,7 @@ class Matplotlib(Backend):
                  data: Union[np.ndarray, pd.DataFrame],
                  m: int,
                  output_size_px: Tuple[int, int] = (512, 512)):
-        self.fig = None,
+        self.fig = None
         self.ax = None
         super().__init__(f, data, m, output_size_px)
 
@@ -95,7 +94,7 @@ class Matplotlib(Backend):
         bootplot.backend.matplotlib.clear_figure(self.ax)
 
     def close_figure(self):
-        bootplot.backend.matplotlib.close_figure(self.fig)
+        bootplot.backend.matplotlib.close_figure(None)
 
     @property
     def plot_args(self):
