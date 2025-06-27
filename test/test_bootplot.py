@@ -78,9 +78,9 @@ def test_bmp():
 
 def test_merge():
     np.random.seed(0)
-    images = np.random.randint(low=0, high=256, size=(25, 100, 100, 4))
+    images = np.random.randint(low=0, high=256, size=(25, 100, 100, 3))
     merged = merge_images(images)
-    assert merged.shape == (100, 100, 4)
+    assert merged.shape == (100, 100, 3)
     assert np.min(merged) >= 0
     assert np.max(merged) <= 255
     assert merged.dtype == np.uint8
