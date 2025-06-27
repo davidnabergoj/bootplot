@@ -4,11 +4,15 @@ from typing import Union, Tuple
 import numpy as np
 import imageio
 import pandas as pd
+from matplotlib import pyplot as plt
+from scipy.ndimage import gaussian_filter
 from tqdm import tqdm
-from PIL import Image
+from PIL import Image, ImageFilter
+from scipy.stats import beta
 
 from bootplot.backend.base import Backend, create_backend
 from bootplot.sorting import sort_images
+from collections import Counter
 
 
 def plot(plot_function: callable,
@@ -21,21 +25,42 @@ def plot(plot_function: callable,
     else:
         plot_function(data[indices], data, *backend.plot_args, **kwargs)
 
+def symmetric_transformation_new(x, k=0.5, threshold = 0.3):
+    y = beta.cdf(x, k, k)
+    return (1-2*threshold) * y + threshold
 
-def merge_images(images: np.ndarray, power: float = 1.0) -> np.ndarray:
-    """
-    Merge images into a static image (averaged image).
-    The shape of images is (batch_size, width, height, channels).
-    This operation overwrites input images.
+def adjust_relative_frequencies_opt(relative_frequencies):
+    dominant_color = max(relative_frequencies, key=relative_frequencies.get)
+    transformed_dominant = symmetric_transformation_new(relative_frequencies[dominant_color])
+    sum_other = 1-relative_frequencies[dominant_color]
+    transformed_other = 1-transformed_dominant
+    return {
+        color: transformed_other * rel_freq / sum_other if color != dominant_color else 
+               transformed_dominant
+        for color, rel_freq in relative_frequencies.items()
+    }
 
-    :param images: images corresponding to different bootstrap samples.
-    :param power: raise the merged image pixels to the specified power to increase contrast.
-    :return: merged image.
-    """
-    images = images.astype(np.float32) / 255  # Cast to float
-    merged = np.mean(images, axis=0) ** power
-    merged = (merged * 255).astype(np.uint8)
-    return merged
+def merge_images(images: np.ndarray) -> np.ndarray:
+    num_images, rows, cols, _ = images.shape
+    new_image = np.zeros((rows, cols, 3), dtype=np.uint8)
+
+    # Iterate over each pixel location
+    for i in range(rows):
+        for j in range(cols):
+            # Extract the colors at the current pixel location across all images
+            pixel_colors = [tuple(images[img, i, j]) for img in range(num_images)]
+            # Count the occurrence of each color in this list of colors
+            color_counts = Counter(pixel_colors)
+            percentages_old = {color: count / sum(color_counts.values()) for color, count in color_counts.items()}
+            if len(percentages_old) > 1:
+                percentages = adjust_relative_frequencies_opt(percentages_old)
+                new_color = np.sum([np.array(c) * p for c, p in percentages.items()], axis=0)
+                new_color = np.clip(new_color, 0, 255).astype(np.uint8)
+                new_image[i, j] = new_color
+            else:
+                new_image[i,j] = list(percentages_old.keys())[0]
+    return new_image
+
 
 
 def decay_images(images: np.ndarray,
@@ -67,7 +92,6 @@ def bootplot(f: callable,
              output_size_px: Tuple[int, int] = (512, 512),
              output_image_path: Union[str, Path] = None,
              output_animation_path: Union[str, Path] = None,
-             contrast_modifier: float = 1.0,
              sort_type: str = 'tsp',
              sort_kwargs: dict = None,
              decay: int = 0,
@@ -103,10 +127,6 @@ def bootplot(f: callable,
     :param output_animation_path: path where the animation should be stored. The animation format is inferred from the
         filename extension. If None, the animation is not created. Default: ``None``.
     :type output_animation_path: str or pathlib.Path
-
-    :param contrast_modifier: modify the contrast in the static image. Setting this to 1 keeps the same contrast,
-        setting this to less than 1 reduces contrast, setting this to greater than 1 increases contrast. Default: ``1``.
-    :type contrast_modifier: float
 
     :param sort_type: method to sort images when constructing the animation. Should be one of the following:
         "tsp" (traveling salesman method on the image similarity graph), "pca" (image projection onto the real line
@@ -183,7 +203,7 @@ def bootplot(f: callable,
     backend.close_figure()
     images = np.stack(images)
 
-    merged_image = merge_images(images, power=contrast_modifier)[..., :3]  # Do not use the alpha channel
+    merged_image = merge_images(images[..., :3])
 
     if output_image_path is not None:
         if verbose:
