@@ -49,7 +49,6 @@ if __name__ == '__main__':
         make_regression,
         dataset,
         m=100,
-        contrast_modifier=3.0,
         output_image_path='bootstrapped_regression_multiple_models.png',
         output_animation_path='bootstrapped_regression_multiple_models.gif',
         verbose=True

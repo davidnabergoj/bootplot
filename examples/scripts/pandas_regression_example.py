@@ -19,7 +19,7 @@ def plot_regression(data_subset, data_full, ax):
     ax.set_ylim(-30, 30)
 
 
-bootplot(
+img = bootplot(
     plot_regression,
     df,
     output_image_path='pandas_example.png',
