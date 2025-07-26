@@ -62,6 +62,21 @@ def merge_images(images: np.ndarray) -> np.ndarray:
     return new_image
 
 
+def merge_images_original(images: np.ndarray) -> np.ndarray:
+    """
+    Merge images into a static image (averaged image).
+    The shape of images is (batch_size, width, height, channels).
+    This operation overwrites input images.
+
+    :param images: images corresponding to different bootstrap resamples.
+    :param images: images corresponding to different bootstrap samples.
+    :return: merged image.
+    """
+    images = images.astype(np.float32) / 255  # Cast to float
+    merged = np.mean(images, axis=0)
+    merged = (merged * 255).astype(np.uint8)
+    return merged
+
 
 def decay_images(images: np.ndarray,
                  m: int,
@@ -91,6 +106,7 @@ def bootplot(f: callable,
              m: int = 100,
              output_size_px: Tuple[int, int] = (512, 512),
              output_image_path: Union[str, Path] = None,
+             transformation: bool = True,
              output_animation_path: Union[str, Path] = None,
              sort_type: str = 'tsp',
              sort_kwargs: dict = None,
@@ -123,6 +139,9 @@ def bootplot(f: callable,
     :param output_image_path: path where the image should be stored. The image format is inferred from the filename
         extension. If None, the image is not stored. Default: ``None``.
     :type output_image_path: str or pathlib.Path
+
+    :param transformation: if True transformation is applied, else images are just averaged. Default: ``True``.
+    :type transformation: bool
 
     :param output_animation_path: path where the animation should be stored. The animation format is inferred from the
         filename extension. If None, the animation is not created. Default: ``None``.
@@ -203,7 +222,10 @@ def bootplot(f: callable,
     backend.close_figure()
     images = np.stack(images)
 
-    merged_image = merge_images(images[..., :3])
+    if transformation:
+        merged_image = merge_images(images[..., :3])
+    else:
+        merged_image = merge_images_original(images[..., :3])
 
     if output_image_path is not None:
         if verbose:
