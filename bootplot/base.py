@@ -25,13 +25,17 @@ def plot(plot_function: callable,
     else:
         plot_function(data[indices], data, *backend.plot_args, **kwargs)
 
-def symmetric_transformation_new(x, k=0.5, threshold = 0.3):
+def symmetric_transformation_new(x, 
+                                 k, 
+                                 threshold):
     y = beta.cdf(x, k, k)
     return (1-2*threshold) * y + threshold
 
-def adjust_relative_frequencies_opt(relative_frequencies):
+def adjust_relative_frequencies_opt(relative_frequencies, 
+                                    k, 
+                                    threshold):
     dominant_color = max(relative_frequencies, key=relative_frequencies.get)
-    transformed_dominant = symmetric_transformation_new(relative_frequencies[dominant_color])
+    transformed_dominant = symmetric_transformation_new(relative_frequencies[dominant_color], k, threshold)
     sum_other = 1-relative_frequencies[dominant_color]
     transformed_other = 1-transformed_dominant
     return {
@@ -40,7 +44,9 @@ def adjust_relative_frequencies_opt(relative_frequencies):
         for color, rel_freq in relative_frequencies.items()
     }
 
-def merge_images(images: np.ndarray) -> np.ndarray:
+def merge_images(images: np.ndarray, 
+                 k: int, 
+                 threshold: int) -> np.ndarray:
     num_images, rows, cols, _ = images.shape
     new_image = np.zeros((rows, cols, 3), dtype=np.uint8)
 
@@ -53,7 +59,7 @@ def merge_images(images: np.ndarray) -> np.ndarray:
             color_counts = Counter(pixel_colors)
             percentages_old = {color: count / sum(color_counts.values()) for color, count in color_counts.items()}
             if len(percentages_old) > 1:
-                percentages = adjust_relative_frequencies_opt(percentages_old)
+                percentages = adjust_relative_frequencies_opt(percentages_old, k, threshold)
                 new_color = np.sum([np.array(c) * p for c, p in percentages.items()], axis=0)
                 new_color = np.clip(new_color, 0, 255).astype(np.uint8)
                 new_image[i, j] = new_color
@@ -61,6 +67,21 @@ def merge_images(images: np.ndarray) -> np.ndarray:
                 new_image[i,j] = list(percentages_old.keys())[0]
     return new_image
 
+
+def merge_images_original(images: np.ndarray) -> np.ndarray:
+    """
+    Merge images into a static image (averaged image) without transformation.
+    The shape of images is (batch_size, width, height, channels).
+    This operation overwrites input images.
+
+    :param images: images corresponding to different bootstrap resamples.
+    :param images: images corresponding to different bootstrap samples.
+    :return: merged image.
+    """
+    images = images.astype(np.float32) / 255  # Cast to float
+    merged = np.mean(images, axis=0)
+    merged = (merged * 255).astype(np.uint8)
+    return merged
 
 
 def decay_images(images: np.ndarray,
@@ -89,8 +110,11 @@ def decay_images(images: np.ndarray,
 def bootplot(f: callable,
              data: Union[np.ndarray, pd.DataFrame],
              m: int = 100,
+             k: int = 2.5,
+             threshold: int = 0.3,
              output_size_px: Tuple[int, int] = (512, 512),
              output_image_path: Union[str, Path] = None,
+             transformation: bool = True,
              output_animation_path: Union[str, Path] = None,
              sort_type: str = 'tsp',
              sort_kwargs: dict = None,
@@ -117,12 +141,21 @@ def bootplot(f: callable,
     :param m: number of boostrap resamples. Default: ``100``.
     :type m: int
 
+    :param k: input beta cdf transformation parameter. Controls the shape Default: ``2.5``.
+    :type k: int
+    
+    :param threshold: input transformation parameter. Controls the codomain of the transformation. It lies between 0 and 1. Default: ``0,3``.
+    :type threshold: int
+
     :param output_size_px: output size (height, width) in pixels. Default: ``(512, 512)``.
     :type output_size_px: tuple[int, int]
 
     :param output_image_path: path where the image should be stored. The image format is inferred from the filename
         extension. If None, the image is not stored. Default: ``None``.
     :type output_image_path: str or pathlib.Path
+
+    :param transformation: if True transformation is applied, else images are just averaged. Default: ``True``.
+    :type transformation: bool
 
     :param output_animation_path: path where the animation should be stored. The animation format is inferred from the
         filename extension. If None, the animation is not created. Default: ``None``.
@@ -203,7 +236,10 @@ def bootplot(f: callable,
     backend.close_figure()
     images = np.stack(images)
 
-    merged_image = merge_images(images[..., :3])
+    if transformation:
+        merged_image = merge_images(images[..., :3], k, threshold)
+    else:
+        merged_image = merge_images_original(images[..., :3])
 
     if output_image_path is not None:
         if verbose:
