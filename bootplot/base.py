@@ -144,7 +144,7 @@ def bootplot(f: callable,
     :param k: input beta cdf transformation parameter. Controls the shape Default: ``2.5``.
     :type k: int
     
-    :param threshold: input transformation parameter. Controls the codomain of the transformation. It lies between 0 and 1. Default: ``0,3``.
+    :param threshold: input transformation parameter. Controls the codomain of the transformation. It lies between 0 and 0.5. Default: ``0,3``.
     :type threshold: int
 
     :param output_size_px: output size (height, width) in pixels. Default: ``(512, 512)``.
