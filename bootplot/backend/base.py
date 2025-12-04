@@ -14,22 +14,37 @@ class Backend(ABC):
                  f: callable,
                  data: Union[np.ndarray, pd.DataFrame],
                  m: int,
-                 output_size_px: Tuple[int, int]):
+                 output_size_px: Tuple[int, int],
+                 single_sample: bool):
         self.output_size_px = output_size_px
         self.f = f
         self.data = data
         self.m = m
+        self.single_sample = single_sample
 
     @abstractmethod
     def create_figure(self):
         raise NotImplemented
 
     def plot(self):
-        indices = np.random.randint(low=0, high=len(self.data), size=len(self.data))
+        size = 1 if self.single_sample else len(self.data)
+        indices = np.random.randint(low=0, high=len(self.data), size=size)
         if isinstance(self.data, pd.DataFrame):
             return self.f(self.data.iloc[indices], self.data, *self.plot_args)
         elif isinstance(self.data, np.ndarray):
             return self.f(self.data[indices], self.data, *self.plot_args)
+
+    def sample_all_indices(self):
+        size = 1 if self.single_sample else len(self.data)
+        return np.random.randint(0, len(self.data), size=(self.m, size))
+
+
+    def plot_from_indices(self, indices):
+        if isinstance(self.data, pd.DataFrame):
+            subset = self.data.iloc[indices]
+        else:
+            subset = self.data[indices]
+        return self.f(subset, self.data, *self.plot_args)
 
     @abstractmethod
     def plot_to_array(self) -> np.ndarray:
@@ -50,8 +65,8 @@ class Backend(ABC):
 
 
 class Basic(Backend):
-    def __init__(self, f: callable, data: Union[np.ndarray, pd.DataFrame], m: int, output_size_px: Tuple[int, int]):
-        super().__init__(f, data, m, output_size_px)
+    def __init__(self, f: callable, data: Union[np.ndarray, pd.DataFrame], m: int, output_size_px: Tuple[int, int], single_sample: bool):
+        super().__init__(f, data, m, output_size_px, single_sample)
         self.cached_image = None
 
     def plot(self):
@@ -79,10 +94,11 @@ class Matplotlib(Backend):
                  f: callable,
                  data: Union[np.ndarray, pd.DataFrame],
                  m: int,
-                 output_size_px: Tuple[int, int] = (512, 512)):
+                 output_size_px: Tuple[int, int] = (512, 512),
+                 single_sample: bool = False):
         self.fig = None
         self.ax = None
-        super().__init__(f, data, m, output_size_px)
+        super().__init__(f, data, m, output_size_px, single_sample)
 
     def create_figure(self):
         self.fig, self.ax = bootplot.backend.matplotlib.create_figure(self.output_size_px)
@@ -106,8 +122,9 @@ class GGPlot2(Backend):
                  f: callable,
                  data: Union[np.ndarray, pd.DataFrame],
                  m: int,
-                 output_size_px: Tuple[int, int] = (512, 512)):
-        super().__init__(f, data, m, output_size_px)
+                 output_size_px: Tuple[int, int] = (512, 512),
+                 single_sample: bool = False):
+        super().__init__(f, data, m, output_size_px, single_sample)
 
     def create_figure(self):
         raise NotImplemented
@@ -131,7 +148,8 @@ class Plotly(Backend):
                  f: callable,
                  data: Union[np.ndarray, pd.DataFrame],
                  m: int,
-                 output_size_px: Tuple[int, int] = (512, 512)):
+                 output_size_px: Tuple[int, int] = (512, 512), 
+                 single_sample: bool = False):
         super().__init__(f, data, m, output_size_px)
 
     def create_figure(self):
