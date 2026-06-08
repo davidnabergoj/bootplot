@@ -133,7 +133,7 @@ def decay_images(images: np.ndarray,
 
 def bootplot(f: callable,
              data: Union[np.ndarray, pd.DataFrame],
-             m: int = 100,
+             m: int = 39,
              k: int = 2.5,
              threshold: int = 0.3,
              output_size_px: Tuple[int, int] = (512, 512),
