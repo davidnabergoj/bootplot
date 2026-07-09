@@ -1,0 +1,8 @@
+LIABILITY FORM for the Graphics Replicability Stamp Initiative (GRSI)
+
+Paper title: A General Approach to Visualizing Uncertainty in Statistical
+             Graphics
+Venue:       IEEE Transactions on Visualization and Computer Graphics
+Authors:     Bernarda Petek, David Nabergoj, Erik Strumbelj
+
+We, the authors of the above paper, give permission to the Replicability Committee and its reviewers to review the code and advertise the review publicly after the stamp is approved.
