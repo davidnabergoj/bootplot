@@ -2,10 +2,11 @@ Title: A General Approach to Visualizing Uncertainty in Statistical Graphics
 Authors: Bernarda Petek, David Nabergoj, Erik Strumbelj
 Venue: IEEE Transactions on Visualization and Computer Graphics
 Operating system: macOS 11 or newer
-Code repository: https://github.com/davidnabergoj/bootplot (this submission is the reproducibility_challenge directory inside it)
+Code repository: https://github.com/davidnabergoj/bootplot (this submission is the Replicability_Stamp directory inside it)
 Reproduced result: Figure 6, left-hand image, produced by our approach that shows 95% confidence intervals for mean bill length per penguin species, created with bootplot, n = 39 samples.
 
 ========================================================================
+This is a submission for the Graphics Replicability Stamp Initiative (GRSI). Please refer to https://www.replicabilitystamp.org for more information.
 
 WHAT THIS DIRECTORY CONTAINS
 ------------------------------------------------------------------------
@@ -19,7 +20,7 @@ HOW TO RUN THE SCRIPT
 ------------------------------------------------------------------------
 On macOS 11 or newer, open a terminal (for example, the built-in Terminal.app) and run the script by giving bash its path. For example, if you cloned the repository into your Downloads folder:
 
-    bash ~/Downloads/bootplot/reproducibility_challenge/install_dependencies.sh
+    bash ~/Downloads/bootplot/Replicability_Stamp/install_dependencies.sh
 
 (~ is your home folder: /Users/<your-username>; adjust the path to wherever you cloned the repository). That is the only command needed. After a few minutes, the reproduced figure opens in Preview and is saved next to the script as mean_estimate_95.png. No administrator password is needed, and nothing is asked during the run, but macOS may ask for permission to access the folder (depending on the folder). For example, if the repository is in Downloads, click OK.
 
