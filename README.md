@@ -100,3 +100,12 @@ See the [examples](examples) folder for more examples, including bar charts, poi
 ## Documentation
 
 Read the documentation and check out tutorials at https://bootplot.readthedocs.io/en/latest/
+
+## Replicability
+
+This repository participates in the [Graphics Replicability Stamp Initiative](https://www.replicabilitystamp.org).
+Figure 6 of the paper can be reproduced with a single script — on macOS 11 or newer, clone the repository and run the script `install_dependencies.sh` from the `Replicability_Stamp` folder, for example (if cloned to Downloads):
+
+    bash ~/Downloads/bootplot/Replicability_Stamp/install_dependencies.sh
+
+For more information, see [Replicability_Stamp/README.txt] file (Replicability_Stamp/README.txt).
