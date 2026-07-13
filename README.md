@@ -104,8 +104,13 @@ Read the documentation and check out tutorials at https://bootplot.readthedocs.i
 ## Replicability
 
 This repository participates in the [Graphics Replicability Stamp Initiative](https://www.replicabilitystamp.org).
-Figure 6 of the paper can be reproduced with a single script — on macOS 11 or newer, clone the repository and run the script `install_dependencies.sh` from the `Replicability_Stamp` folder, for example (if cloned to Downloads):
 
-    bash ~/Downloads/bootplot/Replicability_Stamp/install_dependencies.sh
+Download the code with:
 
-For more information, see [Replicability_Stamp/README.txt](Replicability_Stamp/README.txt) file.
+    git clone https://github.com/davidnabergoj/bootplot.git
+
+To reproduce Fig. 6 in the paper, which shows 95% confidence intervals for mean penguin bill length, run (on macOS 11 or newer):
+
+    bash bootplot/Replicability_Stamp/install_dependencies.sh
+
+The script automatically installs all dependencies into a local folder inside the repository and generates the figure as `mean_estimate_95.png`, opening it in Preview. It takes a few minutes, most of which is downloading the dependencies into the local environment; the figure itself is generated in approximately 1 second. For more details, see [Replicability_Stamp/README.txt](Replicability_Stamp/README.txt).
