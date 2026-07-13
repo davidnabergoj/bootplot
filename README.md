@@ -109,8 +109,12 @@ Download the code with:
 
     git clone https://github.com/davidnabergoj/bootplot.git
 
+Step into the repository:
+
+    cd bootplot
+
 To reproduce Fig. 6 in the paper, which shows 95% confidence intervals for mean penguin bill length, run (on macOS 11 or newer):
 
-    bash bootplot/Replicability_Stamp/install_dependencies.sh
+    bash Replicability_Stamp/install_dependencies.sh
 
 The script automatically installs all dependencies into a local folder inside the repository and generates the figure as `mean_estimate_95.png`, opening it in Preview. It takes a few minutes, most of which is downloading the dependencies into the local environment; the figure itself is generated in approximately 1 second. For more details, see [Replicability_Stamp/README.txt](Replicability_Stamp/README.txt).
