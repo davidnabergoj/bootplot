@@ -108,4 +108,4 @@ Figure 6 of the paper can be reproduced with a single script — on macOS 11 or 
 
     bash ~/Downloads/bootplot/Replicability_Stamp/install_dependencies.sh
 
-For more information, see [Replicability_Stamp/README.txt] file (Replicability_Stamp/README.txt).
+For more information, see [Replicability_Stamp/README.txt](Replicability_Stamp/README.txt) file.
