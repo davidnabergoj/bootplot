@@ -18,11 +18,16 @@ WHAT THIS DIRECTORY CONTAINS
 
 HOW TO RUN THE SCRIPT
 ------------------------------------------------------------------------
-On macOS 11 or newer, open a terminal (for example, the built-in Terminal.app) and run the script by giving bash its path. For example, if you cloned the repository into your Downloads folder:
+On macOS 11 or newer, open a terminal (for example, the built-in
+Terminal.app). Download the code with:
 
-    bash ~/Downloads/bootplot/Replicability_Stamp/install_dependencies.sh
+    git clone https://github.com/davidnabergoj/bootplot.git
 
-(~ is your home folder: /Users/<your-username>; adjust the path to wherever you cloned the repository). That is the only command needed. After a few minutes, the reproduced figure opens in Preview and is saved next to the script as mean_estimate_95.png. No administrator password is needed, and nothing is asked during the run, but macOS may ask for permission to access the folder (depending on the folder). For example, if the repository is in Downloads, click OK.
+Then run the replication script by giving bash its path:
+
+    bash bootplot/Replicability_Stamp/install_dependencies.sh
+
+(The two commands can be run as-is, one after the other: the clone creates a folder named bootplot in your current location, and the second command points into it. If you cloned or downloaded the repository elsewhere, adjust the path accordingly.) That is the only command needed. After a few minutes -- most of which is downloading the dependencies into the local environment -- the reproduced figure opens in Preview and is saved next to the script as mean_estimate_95.png. No administrator password is needed, and nothing is asked during the run, but macOS may ask for permission to access the folder (depending on the folder); click OK.
 
 WHAT THE SCRIPT DOES, STEP BY STEP
 ------------------------------------------------------------------------
